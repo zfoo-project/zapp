@@ -1,0 +1,25 @@
+# 根路径配置
+server:
+  address: 0.0.0.0
+  port: 443
+  servlet:
+    context-path: /
+  ssl:
+    key-store: classpath:3698574__zfoo.com.pfx
+    key-store-password: IaL4na2a
+    keyStoreType: PKCS12
+
+# 自定义属性
+web:
+  path: /usr/local/static
+
+spring:
+  application:
+    name: zapp-web
+
+  # 静态资源配置
+  mvc:
+    static-path-pattern: /**
+  web:
+    resources:
+      static-locations: classpath:/static/,classpath:/META-INF/resources/,classpath:/resource/,classpath:/public/,file:${web.path}

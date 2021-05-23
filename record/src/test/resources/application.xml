@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:record="http://www.zfoo.com/schema/record"
+       xmlns="http://www.springframework.org/schema/beans"
+
+       xsi:schemaLocation="
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-4.0.xsd
+
+
+    http://www.zfoo.com/schema/record
+    http://www.zfoo.com/schema/record-1.0.xsd">
+
+    <context:component-scan base-package="com.zfoo.record"/>
+
+    <record:config id="config" record-package="com.zfoo.record.**.record">
+
+        <record:host cluster="test" user="" password="">
+            <record:address name="server0" url="127.0.0.1:9200"/>
+        </record:host>
+
+        <!-- 缓存策略 -->
+        <record:caches>
+            <record:cache strategy="ten" max-size="10"/>
+            <record:cache strategy="hundred" max-size="100"/>
+            <record:cache strategy="thousand" max-size="1000"/>
+            <record:cache strategy="threeThousand" max-size="3000"/>
+            <record:cache strategy="tenThousand" max-size="10000"/>
+        </record:caches>
+
+        <!-- 持久化策略 -->
+        <record:persisters>
+            <record:persister strategy="cronDefault" type="cron" config="5,15,25,35,45,55 * * * * ?"/>
+            <record:persister strategy="cron3s" type="cron" config="0/3 * * * * ?"/>
+            <record:persister strategy="cron15s" type="cron" config="0/15 * * * * ?"/>
+            <record:persister strategy="cron30s" type="cron" config="0/30 * * * * ?"/>
+            <record:persister strategy="cron1m" type="cron" config="0 0/30 * * * ?"/>
+            <record:persister strategy="time10s" type="time" config="10000"/>
+            <record:persister strategy="time20s" type="time" config="20000"/>
+        </record:persisters>
+    </record:config>
+
+</beans>

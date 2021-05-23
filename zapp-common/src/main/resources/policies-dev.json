@@ -1,0 +1,80 @@
+[
+    {
+        "a": "avatar",
+        "b": "https://report.zfoo.com",
+        "c": "test/avatar/{}",
+        "d": "zfoo-report"
+    },
+    {
+        "a": "background",
+        "b": "https://report.zfoo.com",
+        "c": "test/background/{}",
+        "d": "zfoo-report"
+    },
+    {
+        "a": "img",
+        "b": "https://report.zfoo.com",
+        "c": "test/img/{}/{}_{}_",
+        "d": "zfoo-report"
+    },
+    {
+        "a": "video",
+        "b": "https://report.zfoo.com",
+        "c": "test/video/{}/{}_{}_",
+        "d": "zfoo-report"
+    },
+    {
+        "a": "video.poster",
+        "b": "https://report.zfoo.com",
+        "c": "test/poster/video/{}/{}_{}_",
+        "d": "zfoo-report"
+    },
+    {
+        "a": "report",
+        "b": "https://report.zfoo.com",
+        "c": "test/reporter/{}/{}_{}_{}_",
+        "d": "zfoo-report"
+    },
+    {
+        "a": "word.background",
+        "b": "https://report.zfoo.com",
+        "c": "test/word/background/{}/{}_{}_",
+        "d": "zfoo-report"
+    },
+    {
+        "a": "chat.img",
+        "b": "https://report.zfoo.com",
+        "c": "test/chat/img/{}/{}_{}_{}_",
+        "d": "zfoo-report"
+    },
+    {
+        "a": "chat.video",
+        "b": "https://report.zfoo.com",
+        "c": "test/chat/video/{}/{}_{}_{}_",
+        "d": "zfoo-report"
+    },
+    {
+        "a": "group.avatar",
+        "b": "https://report.zfoo.com",
+        "c": "test/group/avatar/{}_{}_",
+        "d": "zfoo-report"
+    },
+    {
+        "a": "group.background",
+        "b": "https://report.zfoo.com",
+        "c": "test/group/background/{}_{}_",
+        "d": "zfoo-report"
+    },
+    {
+        "a": "group.img",
+        "b": "https://report.zfoo.com",
+        "c": "test/group/img/{}/{}_{}_{}_",
+        "d": "zfoo-report"
+    },
+    {
+        "a": "group.video",
+        "b": "https://report.zfoo.com",
+        "c": "test/group/video/{}/{}_{}_{}_",
+        "d": "zfoo-report"
+    }
+]

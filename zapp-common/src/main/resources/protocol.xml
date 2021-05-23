@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<!-- native为内部消息，common是公共消息每个模块都能使用 -->
+<protocols author="jaysunxiao">
+
+    <module id="1" name="native" minId="0" maxId="100" version="99.99.999">
+        <protocol id="0" location="com.zfoo.net.packet.model.SignalPacketAttachment"/>
+        <protocol id="1" location="com.zfoo.net.packet.model.GatewayPacketAttachment"/>
+        <protocol id="2" location="com.zfoo.net.packet.model.NoAnswerAttachment"/>
+
+
+        <protocol id="20" location="com.zfoo.net.core.gateway.model.AuthUidToGatewayCheck"/>
+        <protocol id="21" location="com.zfoo.net.core.gateway.model.AuthUidToGatewayConfirm"/>
+        <protocol id="22" location="com.zfoo.net.core.gateway.model.AuthUidAsk"/>
+        <protocol id="23" location="com.zfoo.net.core.gateway.model.GatewaySessionInactiveAsk"/>
+        <protocol id="24" location="com.zfoo.net.core.gateway.model.GatewaySynchronizeSidAsk"/>
+    </module>
+
+    <module id="2" name="common" minId="100" maxId="1000" version="99.99.999">
+        <protocol id="100" location="com.zfoo.net.packet.common.Message"/>
+        <protocol id="101" location="com.zfoo.net.packet.common.Error"/>
+        <protocol id="102" location="com.zfoo.net.packet.common.Heartbeat"/>
+        <protocol id="103" location="com.zfoo.net.packet.common.Ping"/>
+        <protocol id="104" location="com.zfoo.net.packet.common.Pong"/>
+
+        <protocol id="111" location="com.zfoo.net.packet.common.PairLong"/>
+        <protocol id="112" location="com.zfoo.net.packet.common.PairString"/>
+        <protocol id="113" location="com.zfoo.net.packet.common.PairLS"/>
+        <protocol id="114" location="com.zfoo.net.packet.common.TripleLong"/>
+        <protocol id="115" location="com.zfoo.net.packet.common.TripleString"/>
+        <protocol id="116" location="com.zfoo.net.packet.common.TripleLSS"/>
+
+        <protocol id="120" location="com.zfoo.app.zapp.common.protocol.common.ChatMessage"/>
+
+        <protocol id="130" location="com.zfoo.app.zapp.common.protocol.common.time.TimeKeyHeaderVO"/>
+        <protocol id="131" location="com.zfoo.app.zapp.common.protocol.common.time.TimeKeyRowVO"/>
+        <protocol id="132" location="com.zfoo.app.zapp.common.protocol.common.time.TimeKeyVO"/>
+        <protocol id="133" location="com.zfoo.app.zapp.common.protocol.common.time.TimeLinkAlbumVO"/>
+        <protocol id="134" location="com.zfoo.app.zapp.common.protocol.common.time.VideoLinkVO"/>
+
+    </module>
+
+    <module id="3" name="zappUserNet" minId="1000" maxId="3000" version="1.0.0">
+        <protocol id="1000" location="com.zfoo.app.zapp.common.protocol.user.WebsocketSignInRequest"/>
+        <protocol id="1001" location="com.zfoo.app.zapp.common.protocol.user.WebsocketSignInResponse"/>
+        <protocol id="1002" location="com.zfoo.app.zapp.common.protocol.user.WebsocketSignOutRequest"/>
+        <protocol id="1003" location="com.zfoo.app.zapp.common.protocol.user.WebsocketSignOutResponse"/>
+        <protocol id="1004" location="com.zfoo.app.zapp.common.protocol.user.SignInByAccountAsk"/>
+        <protocol id="1005" location="com.zfoo.app.zapp.common.protocol.user.SignInByPhoneAsk"/>
+        <protocol id="1010" location="com.zfoo.app.zapp.common.protocol.user.SignInAnswer"/>
+
+
+        <protocol id="1020" location="com.zfoo.app.zapp.common.protocol.user.info.GetUserProfileAsk"/>
+        <protocol id="1021" location="com.zfoo.app.zapp.common.protocol.user.info.GetUserProfileAnswer"/>
+        <protocol id="1022" location="com.zfoo.app.zapp.common.protocol.user.info.GetUserAdminAuthAsk"/>
+        <protocol id="1023" location="com.zfoo.app.zapp.common.protocol.user.info.GetUserAdminAuthAnswer"/>
+        <protocol id="1024" location="com.zfoo.app.zapp.common.protocol.user.info.AccountSecurityAsk"/>
+        <protocol id="1025" location="com.zfoo.app.zapp.common.protocol.user.info.AccountSecurityAnswer"/>
+
+        <protocol id="1030" location="com.zfoo.app.zapp.common.protocol.user.info.UpdateBaseInfoAsk"/>
+        <protocol id="1031" location="com.zfoo.app.zapp.common.protocol.user.info.UpdateAvatarAsk"/>
+        <protocol id="1032" location="com.zfoo.app.zapp.common.protocol.user.info.UpdateBackgroundAsk"/>
+        <protocol id="1033" location="com.zfoo.app.zapp.common.protocol.user.info.UpdateCustomStatusAsk"/>
+        <protocol id="1034" location="com.zfoo.app.zapp.common.protocol.user.info.UpdateSettingAsk"/>
+        <protocol id="1035" location="com.zfoo.app.zapp.common.protocol.user.info.UpdatePasswordAsk"/>
+        <protocol id="1036" location="com.zfoo.app.zapp.common.protocol.user.info.UpdatePhoneAsk"/>
+        <protocol id="1037" location="com.zfoo.app.zapp.common.protocol.user.info.UpdateAdminAuthAsk"/>
+
+        <protocol id="1040" location="com.zfoo.app.zapp.common.protocol.user.info.GetUserProfileFollowAsk"/>
+        <protocol id="1041" location="com.zfoo.app.zapp.common.protocol.user.info.GetUserProfileFollowAnswer"/>
+        <protocol id="1042" location="com.zfoo.app.zapp.common.protocol.user.info.GetUserProfileFanAsk"/>
+        <protocol id="1043" location="com.zfoo.app.zapp.common.protocol.user.info.GetUserProfileFanAnswer"/>
+        <protocol id="1044" location="com.zfoo.app.zapp.common.protocol.user.info.GetUserProfileStarAsk"/>
+        <protocol id="1045" location="com.zfoo.app.zapp.common.protocol.user.info.GetUserProfileStarAnswer"/>
+
+        <protocol id="1050" location="com.zfoo.app.zapp.common.protocol.user.info.model.SettingVO"/>
+
+        <protocol id="1060" location="com.zfoo.app.zapp.common.protocol.user.wechat.WeChatSignInAsk"/>
+        <protocol id="1061" location="com.zfoo.app.zapp.common.protocol.user.wechat.WeChatSignInAnswer"/>
+        <protocol id="1062" location="com.zfoo.app.zapp.common.protocol.user.wechat.WeChatUserInfoAsk"/>
+        <protocol id="1063" location="com.zfoo.app.zapp.common.protocol.user.wechat.WeChatBindAsk"/>
+        <protocol id="1064" location="com.zfoo.app.zapp.common.protocol.user.wechat.WeChatUnbindAsk"/>
+
+        <protocol id="1080" location="com.zfoo.app.zapp.common.protocol.user.weibo.WeiBoSignInAsk"/>
+        <protocol id="1081" location="com.zfoo.app.zapp.common.protocol.user.weibo.WeiBoSignInAnswer"/>
+        <protocol id="1082" location="com.zfoo.app.zapp.common.protocol.user.weibo.WeiBoUserInfoAsk"/>
+        <protocol id="1083" location="com.zfoo.app.zapp.common.protocol.user.weibo.WeiBoBindAsk"/>
+        <protocol id="1084" location="com.zfoo.app.zapp.common.protocol.user.weibo.WeiBoUnbindAsk"/>
+
+
+        <protocol id="1090" location="com.zfoo.app.zapp.common.protocol.user.friend.UserAcceptFriendAsk"/>
+        <protocol id="1091" location="com.zfoo.app.zapp.common.protocol.user.friend.DeleteFriendAsk"/>
+        <protocol id="1092" location="com.zfoo.app.zapp.common.protocol.user.friend.BlacklistAsk"/>
+        <protocol id="1093" location="com.zfoo.app.zapp.common.protocol.user.friend.BlacklistCancelAsk"/>
+        <protocol id="1094" location="com.zfoo.app.zapp.common.protocol.user.friend.ApplyFriendLimitAsk"/>
+
+        <protocol id="1100" location="com.zfoo.app.zapp.common.protocol.user.time.LoveTimeSliceAsk"/>
+        <protocol id="1102" location="com.zfoo.app.zapp.common.protocol.user.time.DeleteTimeSliceAsk"/>
+        <protocol id="1104" location="com.zfoo.app.zapp.common.protocol.user.time.UpdateTimeSliceAsk"/>
+        <protocol id="1106" location="com.zfoo.app.zapp.common.protocol.user.time.LoveStatisticsAsk"/>
+        <protocol id="1108" location="com.zfoo.app.zapp.common.protocol.user.time.CoinConsumeAsk"/>
+        <protocol id="1109" location="com.zfoo.app.zapp.common.protocol.user.time.CoinConsumeAnswer"/>
+        <protocol id="1110" location="com.zfoo.app.zapp.common.protocol.user.time.StarTimeSliceAsk"/>
+
+        <protocol id="1200" location="com.zfoo.app.zapp.common.protocol.user.fan.SubscribeLocationAsk"/>
+        <protocol id="1201" location="com.zfoo.app.zapp.common.protocol.user.fan.SubscribeItemAsk"/>
+        <protocol id="1202" location="com.zfoo.app.zapp.common.protocol.user.fan.SubscribePersonAsk"/>
+        <protocol id="1210" location="com.zfoo.app.zapp.common.protocol.user.fan.FollowUserAsk"/>
+        <protocol id="1211" location="com.zfoo.app.zapp.common.protocol.user.fan.FanUserAsk"/>
+        <protocol id="1212" location="com.zfoo.app.zapp.common.protocol.user.fan.FanCancelUserAsk"/>
+
+        <protocol id="1300" location="com.zfoo.app.zapp.common.protocol.user.group.CreateGroupRequest"/>
+        <protocol id="1301" location="com.zfoo.app.zapp.common.protocol.user.group.CreateGroupResponse"/>
+        <protocol id="1302" location="com.zfoo.app.zapp.common.protocol.user.group.JoinGroupAsk"/>
+        <protocol id="1303" location="com.zfoo.app.zapp.common.protocol.user.group.LeaveGroupAsk"/>
+        <protocol id="1310" location="com.zfoo.app.zapp.common.protocol.user.group.RefreshChannelTimeRequest"/>
+        <protocol id="1311" location="com.zfoo.app.zapp.common.protocol.user.group.RefreshChannelTimeResponse"/>
+        <protocol id="1312" location="com.zfoo.app.zapp.common.protocol.user.group.MuteGroupRequest"/>
+        <protocol id="1313" location="com.zfoo.app.zapp.common.protocol.user.group.MuteGroupResponse"/>
+        <protocol id="1314" location="com.zfoo.app.zapp.common.protocol.user.group.MuteChannelRequest"/>
+        <protocol id="1315" location="com.zfoo.app.zapp.common.protocol.user.group.MuteChannelResponse"/>
+    </module>
+
+    <module id="4" name="zappCacheNet" minId="3000" maxId="4000" version="1.0.0">
+        <protocol id="3000" location="com.zfoo.app.zapp.common.protocol.cache.model.UserCache"/>
+        <protocol id="3001" location="com.zfoo.app.zapp.common.protocol.cache.model.WordVO"/>
+        <protocol id="3002" location="com.zfoo.app.zapp.common.protocol.cache.model.CategoryVO"/>
+
+        <protocol id="3021" location="com.zfoo.app.zapp.common.protocol.cache.GetUserCacheRequest"/>
+        <protocol id="3022" location="com.zfoo.app.zapp.common.protocol.cache.GetUserCacheResponse"/>
+        <protocol id="3023" location="com.zfoo.app.zapp.common.protocol.cache.GetUserCacheAsk"/>
+        <protocol id="3024" location="com.zfoo.app.zapp.common.protocol.cache.GetUserCacheAnswer"/>
+        <protocol id="3025" location="com.zfoo.app.zapp.common.protocol.cache.GetUserTsCacheAsk"/>
+        <protocol id="3026" location="com.zfoo.app.zapp.common.protocol.cache.GetUserTsCacheAnswer"/>
+        <protocol id="3027" location="com.zfoo.app.zapp.common.protocol.cache.GetUserLatestCacheAsk"/>
+        <protocol id="3028" location="com.zfoo.app.zapp.common.protocol.cache.GetUserLatestCacheAnswer"/>
+
+        <protocol id="3030" location="com.zfoo.app.zapp.common.protocol.cache.SearchUserRequest"/>
+        <protocol id="3031" location="com.zfoo.app.zapp.common.protocol.cache.SearchUserResponse"/>
+        <protocol id="3032" location="com.zfoo.app.zapp.common.protocol.cache.SearchUserAsk"/>
+        <protocol id="3033" location="com.zfoo.app.zapp.common.protocol.cache.SearchUserAnswer"/>
+
+        <protocol id="3100" location="com.zfoo.app.zapp.common.protocol.cache.refresh.RefreshUserTsCacheAsk"/>
+        <protocol id="3101" location="com.zfoo.app.zapp.common.protocol.cache.refresh.RefreshWordCacheAsk"/>
+        <protocol id="3102" location="com.zfoo.app.zapp.common.protocol.cache.refresh.RefreshCategoryCacheAsk"/>
+
+        <protocol id="3200" location="com.zfoo.app.zapp.common.protocol.cache.WordFilterAsk"/>
+        <protocol id="3201" location="com.zfoo.app.zapp.common.protocol.cache.WordFilterAnswer"/>
+
+        <protocol id="3300" location="com.zfoo.app.zapp.common.protocol.cache.GetLocationCacheAsk"/>
+        <protocol id="3301" location="com.zfoo.app.zapp.common.protocol.cache.GetLocationCacheAnswer"/>
+        <protocol id="3302" location="com.zfoo.app.zapp.common.protocol.cache.GetItemCacheAsk"/>
+        <protocol id="3303" location="com.zfoo.app.zapp.common.protocol.cache.GetItemCacheAnswer"/>
+        <protocol id="3304" location="com.zfoo.app.zapp.common.protocol.cache.GetPersonCacheAsk"/>
+        <protocol id="3305" location="com.zfoo.app.zapp.common.protocol.cache.GetPersonCacheAnswer"/>
+        <protocol id="3306" location="com.zfoo.app.zapp.common.protocol.cache.GetWordCacheAsk"/>
+        <protocol id="3307" location="com.zfoo.app.zapp.common.protocol.cache.GetWordCacheAnswer"/>
+        <protocol id="3308" location="com.zfoo.app.zapp.common.protocol.cache.GetCategoryCacheAsk"/>
+        <protocol id="3309" location="com.zfoo.app.zapp.common.protocol.cache.GetCategoryCacheAnswer"/>
+
+        <protocol id="3320" location="com.zfoo.app.zapp.common.protocol.cache.search.GetHotSearchAsk"/>
+        <protocol id="3321" location="com.zfoo.app.zapp.common.protocol.cache.search.GetHotSearchAnswer"/>
+    </module>
+
+    <module id="5" name="zappFeedNet" minId="4000" maxId="5000" version="1.0.0">
+        <protocol id="4000" location="com.zfoo.app.zapp.common.protocol.feed.location.CreateTsWithLocationAsk"/>
+        <protocol id="4001" location="com.zfoo.app.zapp.common.protocol.feed.location.LoveTsWithLocationAsk"/>
+        <protocol id="4002" location="com.zfoo.app.zapp.common.protocol.feed.location.DeleteTsWithLocationAsk"/>
+
+        <protocol id="4010" location="com.zfoo.app.zapp.common.protocol.feed.item.CreateTsWithItemAsk"/>
+        <protocol id="4011" location="com.zfoo.app.zapp.common.protocol.feed.item.LoveTsWithItemAsk"/>
+        <protocol id="4012" location="com.zfoo.app.zapp.common.protocol.feed.item.DeleteTsWithItemAsk"/>
+
+        <protocol id="4020" location="com.zfoo.app.zapp.common.protocol.feed.person.CreateTsWithPersonAsk"/>
+        <protocol id="4021" location="com.zfoo.app.zapp.common.protocol.feed.person.LoveTsWithPersonAsk"/>
+        <protocol id="4022" location="com.zfoo.app.zapp.common.protocol.feed.person.DeleteTsWithPersonAsk"/>
+
+        <protocol id="4030" location="com.zfoo.app.zapp.common.protocol.feed.home.CreateTsAsk"/>
+        <protocol id="4031" location="com.zfoo.app.zapp.common.protocol.feed.home.LoveTsAsk"/>
+
+        <protocol id="4040" location="com.zfoo.app.zapp.common.protocol.feed.search.SearchCountAsk"/>
+    </module>
+
+    <module id="10" name="zappChatNet" minId="15000" maxId="18000" version="1.0.0">
+        <protocol id="15000" location="com.zfoo.app.zapp.common.protocol.friend.model.ApplyFriendVO"/>
+        <protocol id="15001" location="com.zfoo.app.zapp.common.protocol.friend.model.FriendInfoVO"/>
+
+        <protocol id="15100" location="com.zfoo.app.zapp.common.protocol.friend.operation.ApplyFriendRequest"/>
+        <protocol id="15102" location="com.zfoo.app.zapp.common.protocol.friend.operation.RejectFriendRequest"/>
+        <protocol id="15103" location="com.zfoo.app.zapp.common.protocol.friend.operation.RejectFriendResponse"/>
+        <protocol id="15104" location="com.zfoo.app.zapp.common.protocol.friend.operation.AcceptFriendRequest"/>
+        <protocol id="15106" location="com.zfoo.app.zapp.common.protocol.friend.operation.DeleteFriendRequest"/>
+        <protocol id="15107" location="com.zfoo.app.zapp.common.protocol.friend.operation.DeleteFriendResponse"/>
+        <protocol id="15108" location="com.zfoo.app.zapp.common.protocol.friend.operation.BlacklistRequest"/>
+        <protocol id="15109" location="com.zfoo.app.zapp.common.protocol.friend.operation.BlacklistResponse"/>
+        <protocol id="15110" location="com.zfoo.app.zapp.common.protocol.friend.operation.BlacklistCancelRequest"/>
+        <protocol id="15111" location="com.zfoo.app.zapp.common.protocol.friend.operation.BlacklistCancelResponse"/>
+        <protocol id="15112" location="com.zfoo.app.zapp.common.protocol.friend.operation.MarkFriendRequest"/>
+        <protocol id="15113" location="com.zfoo.app.zapp.common.protocol.friend.operation.MarkFriendResponse"/>
+
+        <protocol id="15200" location="com.zfoo.app.zapp.common.protocol.friend.chat.FriendChatRequest"/>
+        <protocol id="15202" location="com.zfoo.app.zapp.common.protocol.friend.chat.ReadFriendMessageRequest"/>
+        <protocol id="15203" location="com.zfoo.app.zapp.common.protocol.friend.chat.ReadFriendMessageResponse"/>
+        <protocol id="15204" location="com.zfoo.app.zapp.common.protocol.friend.chat.FriendHistoryMessageRequest"/>
+        <protocol id="15205" location="com.zfoo.app.zapp.common.protocol.friend.chat.FriendHistoryMessageResponse"/>
+        <protocol id="15206" location="com.zfoo.app.zapp.common.protocol.friend.chat.DeleteFriendMessageRequest"/>
+        <protocol id="15208" location="com.zfoo.app.zapp.common.protocol.friend.chat.EditFriendMessageRequest"/>
+
+
+        <protocol id="16000" location="com.zfoo.app.zapp.common.protocol.friend.FriendMessageNotice"/>
+        <protocol id="16001" location="com.zfoo.app.zapp.common.protocol.friend.NewApplyFriendNotice"/>
+        <protocol id="16002" location="com.zfoo.app.zapp.common.protocol.friend.NewFriendNotice"/>
+        <protocol id="16003" location="com.zfoo.app.zapp.common.protocol.friend.DeleteFriendMessageNotice"/>
+        <protocol id="16004" location="com.zfoo.app.zapp.common.protocol.friend.EditFriendMessageNotice"/>
+    </module>
+
+    <module id="13" name="zappGroupNet" minId="18000" maxId="20000" version="1.0.0">
+        <protocol id="18000" location="com.zfoo.app.zapp.common.protocol.group.model.GroupVO"/>
+        <protocol id="18001" location="com.zfoo.app.zapp.common.protocol.group.model.GroupAuthVO"/>
+        <protocol id="18010" location="com.zfoo.app.zapp.common.protocol.group.model.ChannelVO"/>
+        <protocol id="18011" location="com.zfoo.app.zapp.common.protocol.group.model.ChannelBoxVO"/>
+        <protocol id="18012" location="com.zfoo.app.zapp.common.protocol.group.model.ChannelAuthVO"/>
+        <protocol id="18013" location="com.zfoo.app.zapp.common.protocol.group.model.GroupMemberSimpleVO"/>
+        <protocol id="18014" location="com.zfoo.app.zapp.common.protocol.group.model.GroupTimeVO"/>
+        <protocol id="18015" location="com.zfoo.app.zapp.common.protocol.group.model.ChannelTimeVO"/>
+
+        <protocol id="18100" location="com.zfoo.app.zapp.common.protocol.group.chat.GroupChatRequest"/>
+        <protocol id="18102" location="com.zfoo.app.zapp.common.protocol.group.chat.GroupHistoryMessageRequest"/>
+        <protocol id="18103" location="com.zfoo.app.zapp.common.protocol.group.chat.GroupHistoryMessageResponse"/>
+        <protocol id="18105" location="com.zfoo.app.zapp.common.protocol.group.chat.DeleteGroupMessageRequest"/>
+        <protocol id="18107" location="com.zfoo.app.zapp.common.protocol.group.chat.EditGroupMessageRequest"/>
+        <protocol id="18109" location="com.zfoo.app.zapp.common.protocol.group.chat.PinGroupMessageRequest"/>
+        <protocol id="18110" location="com.zfoo.app.zapp.common.protocol.group.chat.DeleteGroupPinMessageRequest"/>
+        <protocol id="18111" location="com.zfoo.app.zapp.common.protocol.group.chat.DeleteGroupPinMessageResponse"/>
+        <protocol id="18112" location="com.zfoo.app.zapp.common.protocol.group.chat.GroupHistoryPinMessageRequest"/>
+        <protocol id="18113" location="com.zfoo.app.zapp.common.protocol.group.chat.GroupHistoryPinMessageResponse"/>
+
+
+        <protocol id="18200" location="com.zfoo.app.zapp.common.protocol.group.setting.SaveGroupAvatarRequest"/>
+        <protocol id="18201" location="com.zfoo.app.zapp.common.protocol.group.setting.SaveGroupAvatarResponse"/>
+        <protocol id="18202" location="com.zfoo.app.zapp.common.protocol.group.setting.SaveGroupBackgroundRequest"/>
+        <protocol id="18203" location="com.zfoo.app.zapp.common.protocol.group.setting.SaveGroupBackgroundResponse"/>
+        <protocol id="18204" location="com.zfoo.app.zapp.common.protocol.group.setting.SaveGroupSettingRequest"/>
+        <protocol id="18205" location="com.zfoo.app.zapp.common.protocol.group.setting.SaveGroupSettingResponse"/>
+        <protocol id="18206" location="com.zfoo.app.zapp.common.protocol.group.setting.RefreshGroupNameRequest"/>
+
+        <protocol id="18300" location="com.zfoo.app.zapp.common.protocol.group.channel.CreateChannelBoxRequest"/>
+        <protocol id="18301" location="com.zfoo.app.zapp.common.protocol.group.channel.CreateChannelBoxResponse"/>
+        <protocol id="18302" location="com.zfoo.app.zapp.common.protocol.group.channel.CreateChannelRequest"/>
+        <protocol id="18303" location="com.zfoo.app.zapp.common.protocol.group.channel.CreateChannelResponse"/>
+        <protocol id="18304" location="com.zfoo.app.zapp.common.protocol.group.channel.DeleteChannelBoxRequest"/>
+        <protocol id="18305" location="com.zfoo.app.zapp.common.protocol.group.channel.DeleteChannelBoxResponse"/>
+        <protocol id="18306" location="com.zfoo.app.zapp.common.protocol.group.channel.DeleteChannelRequest"/>
+        <protocol id="18307" location="com.zfoo.app.zapp.common.protocol.group.channel.DeleteChannelResponse"/>
+        <protocol id="18308" location="com.zfoo.app.zapp.common.protocol.group.channel.SaveChannelRequest"/>
+        <protocol id="18309" location="com.zfoo.app.zapp.common.protocol.group.channel.SaveChannelResponse"/>
+        <protocol id="18310" location="com.zfoo.app.zapp.common.protocol.group.channel.SaveChannelBoxRequest"/>
+        <protocol id="18311" location="com.zfoo.app.zapp.common.protocol.group.channel.SaveChannelBoxResponse"/>
+
+
+        <protocol id="18400" location="com.zfoo.app.zapp.common.protocol.group.member.model.InviteCodeVO"/>
+        <protocol id="18401" location="com.zfoo.app.zapp.common.protocol.group.member.model.GroupMemberVO"/>
+        <protocol id="18410" location="com.zfoo.app.zapp.common.protocol.group.member.CreateInviteGroupCodeRequest"/>
+        <protocol id="18411" location="com.zfoo.app.zapp.common.protocol.group.member.CreateInviteGroupCodeResponse"/>
+        <protocol id="18412" location="com.zfoo.app.zapp.common.protocol.group.member.JoinGroupRequest"/>
+        <protocol id="18413" location="com.zfoo.app.zapp.common.protocol.group.member.JoinGroupResponse"/>
+        <protocol id="18414" location="com.zfoo.app.zapp.common.protocol.group.member.JoinGroupByUserIdRequest"/>
+        <protocol id="18420" location="com.zfoo.app.zapp.common.protocol.group.member.DeleteInviteGroupCodeRequest"/>
+        <protocol id="18421" location="com.zfoo.app.zapp.common.protocol.group.member.DeleteInviteGroupCodeResponse"/>
+        <protocol id="18422" location="com.zfoo.app.zapp.common.protocol.group.member.LeaveGroupRequest"/>
+        <protocol id="18423" location="com.zfoo.app.zapp.common.protocol.group.member.LeaveGroupResponse"/>
+        <protocol id="18424" location="com.zfoo.app.zapp.common.protocol.group.member.AllInviteGroupCodeRequest"/>
+        <protocol id="18425" location="com.zfoo.app.zapp.common.protocol.group.member.AllInviteGroupCodeResponse"/>
+        <protocol id="18430" location="com.zfoo.app.zapp.common.protocol.group.member.GroupMemberListRequest"/>
+        <protocol id="18431" location="com.zfoo.app.zapp.common.protocol.group.member.GroupMemberListResponse"/>
+        <protocol id="18432" location="com.zfoo.app.zapp.common.protocol.group.member.GroupMemberInfoRequest"/>
+        <protocol id="18433" location="com.zfoo.app.zapp.common.protocol.group.member.GroupMemberInfoResponse"/>
+        <protocol id="18434" location="com.zfoo.app.zapp.common.protocol.group.member.KickMemberRequest"/>
+        <protocol id="18435" location="com.zfoo.app.zapp.common.protocol.group.member.KickMemberResponse"/>
+
+
+        <protocol id="18500" location="com.zfoo.app.zapp.common.protocol.group.auth.CreateGroupAuthRequest"/>
+        <protocol id="18501" location="com.zfoo.app.zapp.common.protocol.group.auth.DeleteGroupAuthRequest"/>
+        <protocol id="18502" location="com.zfoo.app.zapp.common.protocol.group.auth.SaveGroupAuthRequest"/>
+        <protocol id="18503" location="com.zfoo.app.zapp.common.protocol.group.auth.SaveGroupAuthResponse"/>
+        <protocol id="18512" location="com.zfoo.app.zapp.common.protocol.group.auth.SaveChannelAuthRequest"/>
+        <protocol id="18513" location="com.zfoo.app.zapp.common.protocol.group.auth.SaveChannelAuthResponse"/>
+        <protocol id="18520" location="com.zfoo.app.zapp.common.protocol.group.auth.AddMemberToGroupAuthRequest"/>
+        <protocol id="18521" location="com.zfoo.app.zapp.common.protocol.group.auth.AddMemberToGroupAuthResponse"/>
+        <protocol id="18522" location="com.zfoo.app.zapp.common.protocol.group.auth.RemoveMemberFromGroupAuthRequest"/>
+        <protocol id="18523" location="com.zfoo.app.zapp.common.protocol.group.auth.RemoveMemberFromGroupAuthResponse"/>
+        <protocol id="18530" location="com.zfoo.app.zapp.common.protocol.group.auth.DeleteGroupRequest"/>
+        <protocol id="18535" location="com.zfoo.app.zapp.common.protocol.group.auth.ChangeGroupAdminRequest"/>
+        <protocol id="18536" location="com.zfoo.app.zapp.common.protocol.group.auth.ChangeGroupAdminResponse"/>
+
+
+        <protocol id="19000" location="com.zfoo.app.zapp.common.protocol.group.DeleteGroupNotice"/>
+        <protocol id="19001" location="com.zfoo.app.zapp.common.protocol.group.GroupUpdateNotice"/>
+        <protocol id="19002" location="com.zfoo.app.zapp.common.protocol.group.MemberGroupAuthIdUpdateNotice"/>
+        <protocol id="19003" location="com.zfoo.app.zapp.common.protocol.group.KickMemberNotice"/>
+        <protocol id="19004" location="com.zfoo.app.zapp.common.protocol.group.DeleteGroupMessageNotice"/>
+        <protocol id="19005" location="com.zfoo.app.zapp.common.protocol.group.EditGroupMessageNotice"/>
+        <protocol id="19006" location="com.zfoo.app.zapp.common.protocol.group.GroupChatMessageNotice"/>
+    </module>
+
+
+    <module id="90" name="zappPushNet" minId="30000" maxId="32766" version="1.0.0">
+        <protocol id="30100" location="com.zfoo.app.zapp.common.protocol.push.friend.FriendChatMessagePush"/>
+        <protocol id="30102" location="com.zfoo.app.zapp.common.protocol.push.friend.FriendChatMessagePushToGateway"/>
+        <protocol id="30103" location="com.zfoo.app.zapp.common.protocol.push.friend.ApplyFriendPush"/>
+        <protocol id="30104" location="com.zfoo.app.zapp.common.protocol.push.friend.ApplyFriendPushToGateway"/>
+        <protocol id="30105" location="com.zfoo.app.zapp.common.protocol.push.friend.AcceptFriendPush"/>
+        <protocol id="30106" location="com.zfoo.app.zapp.common.protocol.push.friend.AcceptFriendPushToGateway"/>
+        <protocol id="30107" location="com.zfoo.app.zapp.common.protocol.push.friend.DeleteFriendMessagePush"/>
+        <protocol id="30108" location="com.zfoo.app.zapp.common.protocol.push.friend.DeleteFriendMessagePushToGateway"/>
+        <protocol id="30109" location="com.zfoo.app.zapp.common.protocol.push.friend.EditFriendMessagePush"/>
+        <protocol id="30110" location="com.zfoo.app.zapp.common.protocol.push.friend.EditFriendMessagePushToGateway"/>
+
+        <protocol id="30200" location="com.zfoo.app.zapp.common.protocol.push.group.DeleteGroupPush"/>
+        <protocol id="30201" location="com.zfoo.app.zapp.common.protocol.push.group.DeleteGroupPushToGateway"/>
+        <protocol id="30210" location="com.zfoo.app.zapp.common.protocol.push.group.GroupUpdatePush"/>
+        <protocol id="30211" location="com.zfoo.app.zapp.common.protocol.push.group.GroupUpdatePushToGateway"/>
+        <protocol id="30220" location="com.zfoo.app.zapp.common.protocol.push.group.MemberGroupAuthIdUpdatePush"/>
+        <protocol id="30221"
+                  location="com.zfoo.app.zapp.common.protocol.push.group.MemberGroupAuthIdUpdatePushToGateway"/>
+        <protocol id="30222" location="com.zfoo.app.zapp.common.protocol.push.group.KickMemberPush"/>
+        <protocol id="30223" location="com.zfoo.app.zapp.common.protocol.push.group.KickMemberPushToGateway"/>
+
+        <protocol id="30300" location="com.zfoo.app.zapp.common.protocol.push.group.GroupChatMessagePush"/>
+        <protocol id="30301" location="com.zfoo.app.zapp.common.protocol.push.group.GroupChatMessagePushToGateway"/>
+        <protocol id="30302" location="com.zfoo.app.zapp.common.protocol.push.group.DeleteGroupMessagePush"/>
+        <protocol id="30303" location="com.zfoo.app.zapp.common.protocol.push.group.DeleteGroupMessagePushToGateway"/>
+        <protocol id="30304" location="com.zfoo.app.zapp.common.protocol.push.group.EditGroupMessagePush"/>
+        <protocol id="30305" location="com.zfoo.app.zapp.common.protocol.push.group.EditGroupMessagePushToGateway"/>
+    </module>
+
+</protocols>

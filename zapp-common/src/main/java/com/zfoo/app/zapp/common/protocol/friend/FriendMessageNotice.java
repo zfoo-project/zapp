@@ -1,0 +1,69 @@
+/*
+ * Copyright (C) 2020 The zfoo Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations under the License.
+ */
+
+package com.zfoo.app.zapp.common.protocol.friend;
+
+import com.zfoo.app.zapp.common.protocol.common.ChatMessage;
+import com.zfoo.protocol.IPacket;
+
+/**
+ * @author jaysunxiao
+ * @version 1.0
+ * @since 2020-04-11 11:49
+ */
+public class FriendMessageNotice implements IPacket {
+
+    public static final transient short PROTOCOL_ID = 16000;
+
+    private long uidA;
+    private long uidB;
+
+    private ChatMessage chatMessage;
+
+    public static FriendMessageNotice valueOf(long uidA, long uidB, ChatMessage chatMessage) {
+        var notice = new FriendMessageNotice();
+        notice.uidA = uidA;
+        notice.uidB = uidB;
+        notice.chatMessage = chatMessage;
+        return notice;
+    }
+
+    @Override
+    public short protocolId() {
+        return PROTOCOL_ID;
+    }
+
+    public long getUidA() {
+        return uidA;
+    }
+
+    public void setUidA(long uidA) {
+        this.uidA = uidA;
+    }
+
+    public long getUidB() {
+        return uidB;
+    }
+
+    public void setUidB(long uidB) {
+        this.uidB = uidB;
+    }
+
+    public ChatMessage getChatMessage() {
+        return chatMessage;
+    }
+
+    public void setChatMessage(ChatMessage chatMessage) {
+        this.chatMessage = chatMessage;
+    }
+}

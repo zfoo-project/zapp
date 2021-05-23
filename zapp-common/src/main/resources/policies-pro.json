@@ -1,0 +1,80 @@
+[
+    {
+        "a": "avatar",
+        "b": "https://union.zfoo.com",
+        "c": "avatar/{}",
+        "d": "zfoo-union"
+    },
+    {
+        "a": "background",
+        "b": "https://union.zfoo.com",
+        "c": "background/{}",
+        "d": "zfoo-union"
+    },
+    {
+        "a": "img",
+        "b": "https://img.zfoo.com",
+        "c": "{}/{}_{}_",
+        "d": "zfoo-img"
+    },
+    {
+        "a": "video",
+        "b": "https://video.zfoo.com",
+        "c": "{}/{}_{}_",
+        "d": "zfoo-video"
+    },
+    {
+        "a": "video.poster",
+        "b": "https://video.zfoo.com",
+        "c": "poster/{}/{}_{}_",
+        "d": "zfoo-video"
+    },
+    {
+        "a": "report",
+        "b": "https://report.zfoo.com",
+        "c": "{}/{}_{}_{}_",
+        "d": "zfoo-report"
+    },
+    {
+        "a": "word.background",
+        "b": "https://word.zfoo.com",
+        "c": "background/{}/{}_{}_",
+        "d": "zfoo-word"
+    },
+    {
+        "a": "chat.img",
+        "b": "https://chat.zfoo.com",
+        "c": "img/{}/{}_{}_{}_",
+        "d": "zfoo-chat"
+    },
+    {
+        "a": "chat.video",
+        "b": "https://chat.zfoo.com",
+        "c": "video/{}/{}_{}_{}_",
+        "d": "zfoo-chat"
+    },
+    {
+        "a": "group.avatar",
+        "b": "https://group.zfoo.com",
+        "c": "avatar/{}_{}_",
+        "d": "zfoo-group"
+    },
+    {
+        "a": "group.background",
+        "b": "https://group.zfoo.com",
+        "c": "background/{}_{}_",
+        "d": "zfoo-group"
+    },
+    {
+        "a": "group.img",
+        "b": "https://group.zfoo.com",
+        "c": "img/{}/{}_{}_{}_",
+        "d": "zfoo-group"
+    },
+    {
+        "a": "group.video",
+        "b": "https://group.zfoo.com",
+        "c": "video/{}/{}_{}_{}_",
+        "d": "zfoo-group"
+    }
+]

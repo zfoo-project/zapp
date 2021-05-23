@@ -1,0 +1,21 @@
+# 根路径配置
+server:
+  address: 0.0.0.0
+  port: 9000
+  servlet:
+    context-path: /
+
+# 自定义属性
+web:
+  path: /usr/local/static
+
+spring:
+  application:
+    name: zapp-web-test
+
+  # 静态资源配置
+  mvc:
+    static-path-pattern: /**
+  web:
+    resources:
+      static-locations: classpath:/static/,classpath:/META-INF/resources/,classpath:/resource/,classpath:/public/,file:${web.path}
