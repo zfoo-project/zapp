@@ -14,7 +14,10 @@
 - 百度SEO主动推送
 - 发图片，发视频，把大文件上传到oss上
 - 聊天发图片，发视频，频道聊天，好友聊天，通过websocket实现
-- spring boot, zfoo rpc, mongodb, zookeeper
+- spring boot
+- zfoo rpc
+- mongodb 4.2
+- zookeeper 3.6.1
 
 前端：
 
