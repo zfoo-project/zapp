@@ -22,6 +22,7 @@
 - PWA，自适应页面
 - service worker实现
 - vue, vuetify
+- 百度和google页面统计
 
 ### Ⅲ. 适用项目
 
@@ -65,3 +66,11 @@
 
 - 登录/登出
   ![Image text](seo-puppeteer/img/home11.png)
+
+### Ⅴ. 项目部署
+
+- 首先必须用maven安装 [zfoo](https://github.com/zfoo-project/zfoo) 项目
+- 将前端项目zapp-web打包，打包过后，放在后端项目zapp-web下的resources中的static目录
+- 再将zapp用maven打包install成fatjar，所以每个项目只有一个jar包
+- 最后使用命令直接运行，nohup java -Dspring.profiles.active=pro -jar ${jarPath} >/dev/null 2>&1 &
+- -Dspring.profiles.active这个参数决定了用哪一个配置文件，pro代表使用 deploy-pro.properties 这个配置文件
