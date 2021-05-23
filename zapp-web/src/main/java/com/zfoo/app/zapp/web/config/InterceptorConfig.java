@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 如果需要SEO，就要开启这个配置
+ * 如果需要SEO，就要开启这个配置，这个使用的就是puppeteer作为服务端渲染，详细见：seo-puppeteer/spider.js
  *
  * @author jaysunxiao
  * @version 1.0
