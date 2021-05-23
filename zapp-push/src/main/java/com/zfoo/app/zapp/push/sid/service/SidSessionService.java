@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 public class SidSessionService implements ISidSessionService {
 
     /**
+     * push中的HashMap如果机器足够可以适当调大一点，比如uidSessionMap设置为100 -> 1_0000
      * 考虑到多端登录，一个网关session可能对应多个uid，一个uid可能对于多个sid
      */
     private ConcurrentHashMap<Session, Map<Long, Set<Long>>> uidSessionMap = new ConcurrentHashMap<>();
