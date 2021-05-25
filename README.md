@@ -27,6 +27,12 @@
 - vue, vuetify
 - 百度和google页面统计
 
+数据库和资源：
+```
+链接：https://pan.baidu.com/s/1pX0T-Ok_2Su-dz_9ghvfeg 
+提取码：zfoo 
+```
+
 ### Ⅲ. 适用项目
 
 - 你可以轻易把这个项目改造成一个聊天室，博客，交友平台，具有高度的自定义
