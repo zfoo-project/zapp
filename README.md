@@ -28,9 +28,16 @@
 - 百度和google页面统计
 
 数据库和资源：
+
 ```
 链接：https://pan.baidu.com/s/1pX0T-Ok_2Su-dz_9ghvfeg 
 提取码：zfoo 
+```
+
+视频介绍及运行教程：
+
+```
+链接：https://www.bilibili.com/video/BV1Y44y1z7zf?share_source=copy_web
 ```
 
 ### Ⅲ. 适用项目
