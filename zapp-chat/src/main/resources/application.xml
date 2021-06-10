@@ -23,7 +23,9 @@
     <context:component-scan base-package="com.zfoo.app.zapp.chat"/>
 
     <orm:config id="zappChatOrm" entity-package="com.zfoo.app.zapp.common.**.entity">
-        <orm:host database="${mongodb.database}" url="${mongodb.url}"/>
+        <orm:host database="${mongodb.database}" user="${mongodb.user}" password="${mongodb.password}">
+            <orm:address name="${mongodb.address.name}" url="${mongodb.address.url}"/>
+        </orm:host>
 
         <!-- 缓存策略 -->
         <orm:caches>
