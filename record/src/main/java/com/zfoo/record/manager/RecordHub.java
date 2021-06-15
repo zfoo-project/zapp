@@ -23,7 +23,10 @@ import com.zfoo.record.model.vo.RecordDef;
 import com.zfoo.util.net.HostAndPort;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.message.BasicHeader;
 import org.elasticsearch.client.Node;
 import org.elasticsearch.client.RestClient;
@@ -106,6 +109,18 @@ public class RecordHub implements IRecordHub {
         // 设置每个请求需要发送的默认headers，这样就不用在每个请求中指定它们。
         Header[] defaultHeaders = new Header[]{new BasicHeader("header", "value")};
         builder.setDefaultHeaders(defaultHeaders);
+
+        // 设置数据库账号密码
+        if (!StringUtils.isBlank(hostConfig.getUser()) && !StringUtils.isBlank(hostConfig.getPassword())) {
+            var credentialsProvider = new BasicCredentialsProvider();
+            credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(hostConfig.getUser(), hostConfig.getPassword()));
+
+            builder.setHttpClientConfigCallback(httpClientBuilder -> {
+                httpClientBuilder.disableAuthCaching();
+                return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+            });
+        }
+
         builder.setFailureListener(new RestClient.FailureListener() {
             @Override
             public void onFailure(Node node) {
@@ -114,6 +129,7 @@ public class RecordHub implements IRecordHub {
                 // Used internally when sniffing on failure is enabled.(这句话没搞懂啥意思)
             }
         });
+
         builder.setRequestConfigCallback(new RestClientBuilder.RequestConfigCallback() {
             @Override
             public RequestConfig.Builder customizeRequestConfig(RequestConfig.Builder requestConfigBuilder) {
