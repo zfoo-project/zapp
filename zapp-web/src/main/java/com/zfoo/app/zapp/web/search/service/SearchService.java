@@ -32,6 +32,7 @@ import com.zfoo.net.NetContext;
 import com.zfoo.net.util.SimpleCache;
 import com.zfoo.orm.OrmContext;
 import com.zfoo.orm.model.query.Page;
+import com.zfoo.protocol.collection.ArrayUtils;
 import com.zfoo.protocol.collection.CollectionUtils;
 import com.zfoo.protocol.model.Pair;
 import com.zfoo.protocol.util.StringUtils;
@@ -148,7 +149,7 @@ public class SearchService implements ISearchService {
         var words = ToAnalysis.parse(query)
                 .getTerms()
                 .stream()
-                .filter(it -> CollectionUtils.isNotEmpty(it.termNatures().termNatures))
+                .filter(it -> ArrayUtils.isNotEmpty(it.termNatures().termNatures))
                 .filter(it -> Arrays.stream(it.termNatures().termNatures).anyMatch(nature -> nature.nature.natureStr.contains("n")))
                 .map(it -> it.getName().trim())
                 .filter(it -> !StringUtils.isBlank(it))

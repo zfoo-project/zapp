@@ -15,6 +15,7 @@ package com.zfoo.app.zapp.web.util;
 
 import com.zfoo.app.zapp.common.constant.AppConstant;
 import com.zfoo.app.zapp.common.util.TokenUtils;
+import com.zfoo.protocol.collection.ArrayUtils;
 import com.zfoo.protocol.collection.CollectionUtils;
 import com.zfoo.protocol.util.StringUtils;
 import com.zfoo.util.math.NumberUtils;
@@ -59,7 +60,7 @@ public abstract class HttpUtils {
         // 读取cookie
         var cookies = request.getCookies();
 
-        if (CollectionUtils.isEmpty(cookies)) {
+        if (ArrayUtils.isEmpty(cookies)) {
             return -1;
         }
 

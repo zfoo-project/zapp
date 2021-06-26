@@ -13,7 +13,7 @@
 
 package com.zfoo.record.model.vo;
 
-import com.zfoo.protocol.collection.CollectionUtils;
+import com.zfoo.protocol.collection.ArrayUtils;
 import com.zfoo.protocol.util.AssertionUtils;
 import com.zfoo.protocol.util.ReflectionUtils;
 import com.zfoo.protocol.util.StringUtils;
@@ -80,7 +80,7 @@ public class RecordDef {
         }
 
         var idFields = ReflectionUtils.getFieldsByAnnoInPOJOClass(clazz, RecordId.class);
-        AssertionUtils.isTrue(CollectionUtils.isNotEmpty(idFields) && idFields.length == 1, "记录类Record[{}]必须只有且仅有一个RecordId注解", clazz.getSimpleName());
+        AssertionUtils.isTrue(ArrayUtils.isNotEmpty(idFields) && idFields.length == 1, "记录类Record[{}]必须只有且仅有一个RecordId注解", clazz.getSimpleName());
         recordDef.idField = ReflectionUtils.getFieldsByAnnoInPOJOClass(clazz, RecordId.class)[0];
         ReflectionUtils.makeAccessible(recordDef.idField);
         // idField必须用private修饰

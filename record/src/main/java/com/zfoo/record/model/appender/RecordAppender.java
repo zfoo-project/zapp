@@ -15,7 +15,7 @@ package com.zfoo.record.model.appender;
 
 import ch.qos.logback.classic.AsyncAppender;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import com.zfoo.protocol.collection.CollectionUtils;
+import com.zfoo.protocol.collection.ArrayUtils;
 import com.zfoo.record.manager.RecordHub;
 import com.zfoo.record.model.record.IRecord;
 
@@ -35,7 +35,7 @@ public class RecordAppender extends AsyncAppender {
             return;
         }
         var argumentArray = loggingEvent.getArgumentArray();
-        if (CollectionUtils.isEmpty(argumentArray)) {
+        if (ArrayUtils.isEmpty(argumentArray)) {
             return;
         }
         for (var argument : argumentArray) {
