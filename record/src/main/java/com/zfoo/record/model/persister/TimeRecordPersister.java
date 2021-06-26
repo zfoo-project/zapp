@@ -25,7 +25,7 @@ import com.zfoo.record.model.constant.RecordConstant;
 import com.zfoo.record.model.record.IRecord;
 import com.zfoo.record.model.vo.RecordDef;
 import com.zfoo.record.util.RecordUtils;
-import com.zfoo.scheduler.SchedulerContext;
+import com.zfoo.scheduler.manager.SchedulerBus;
 import io.netty.util.concurrent.FastThreadLocal;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.bulk.BulkRequest;
@@ -88,7 +88,7 @@ public class TimeRecordPersister extends AbstractRecordPersister {
 
     @Override
     public void start() {
-        SchedulerContext.getSchedulerManager().scheduleAtFixedRate(new Runnable() {
+        SchedulerBus.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 if (!RecordContext.isStop()) {

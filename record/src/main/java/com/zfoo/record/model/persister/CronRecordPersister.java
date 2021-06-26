@@ -24,7 +24,7 @@ import com.zfoo.record.model.constant.RecordConstant;
 import com.zfoo.record.model.record.IRecord;
 import com.zfoo.record.model.vo.RecordDef;
 import com.zfoo.record.util.RecordUtils;
-import com.zfoo.scheduler.SchedulerContext;
+import com.zfoo.scheduler.manager.SchedulerBus;
 import com.zfoo.scheduler.util.TimeUtils;
 import io.netty.util.concurrent.FastThreadLocal;
 import org.elasticsearch.action.ActionListener;
@@ -180,7 +180,7 @@ public class CronRecordPersister extends AbstractRecordPersister {
         }
 
         if (!RecordContext.isStop()) {
-            SchedulerContext.getSchedulerManager().schedule(new Runnable() {
+            SchedulerBus.schedule(new Runnable() {
                 @Override
                 public void run() {
                     if (!RecordContext.isStop()) {
