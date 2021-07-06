@@ -123,6 +123,13 @@
             <version>${zfoo.scheduler.version}</version>
         </dependency>
 
+        <!-- Lucene提供的中文分词器模块，lucene-analyzers-smartcn:Lucene  的中文分词器 SmartChineseAnalyzer -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analyzers-smartcn</artifactId>
+            <version>${lucene.version}</version>
+        </dependency>
+
         <!-- 依赖的elastic search模块类库 -->
         <dependency>
             <groupId>org.elasticsearch</groupId>
