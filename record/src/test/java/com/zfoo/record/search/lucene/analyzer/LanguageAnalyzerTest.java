@@ -38,7 +38,7 @@ import java.io.*;
 @Ignore
 public class LanguageAnalyzerTest {
 
-    private static String chStr = "中华人民共和国简称中国, 是一个有13亿人口的国家";
+    private static String chStr = "中华人民共和国简称中国, 是一个有14亿人口的国家";
     private static String enStr = "Dogs can not achieve a place,eyes can reach; ";
 
     private void printAnalyzer(Analyzer analyzer, String str) throws IOException {
