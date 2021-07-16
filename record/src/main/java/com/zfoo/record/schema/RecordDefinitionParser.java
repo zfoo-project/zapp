@@ -13,11 +13,11 @@
 
 package com.zfoo.record.schema;
 
+import com.zfoo.protocol.util.DomUtils;
 import com.zfoo.protocol.util.StringUtils;
 import com.zfoo.record.RecordContext;
 import com.zfoo.record.manager.RecordHub;
 import com.zfoo.record.model.config.*;
-import com.zfoo.util.DomUtils;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
