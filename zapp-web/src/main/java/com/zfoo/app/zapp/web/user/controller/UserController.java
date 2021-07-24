@@ -102,9 +102,6 @@ public class UserController {
         }
 
         var userId = TokenUtils.get(token).getLeft();
-        if (!CommonUtils.isUserIdInRange(List.of(userId))) {
-            return BaseResponse.valueOf(CodeEnum.SIGN_IN_FIRST);
-        }
 
         var answer = NetContext.getConsumer().syncAsk(GetUserProfileAsk.valueOf(userId), GetUserProfileAnswer.class, userId).packet();
 

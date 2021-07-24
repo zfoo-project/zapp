@@ -36,7 +36,7 @@ public abstract class CommonUtils {
     /**
      * 获取用户最大id，每10秒钟刷新一次
      */
-    private static SingleCache<Long> maxUserIdCache = SingleCache.build(10 * TimeUtils.MILLIS_PER_SECOND, new Supplier<Long>() {
+    private static SingleCache<Long> maxUserIdCache = SingleCache.build(3 * TimeUtils.MILLIS_PER_SECOND, new Supplier<Long>() {
         @Override
         public Long get() {
             return MongoIdUtils.getMaxIdFromMongoDefault(UserEntity.class);
@@ -46,7 +46,7 @@ public abstract class CommonUtils {
     /**
      * 获取时间片最大id，每10秒钟刷新一次
      */
-    private static SingleCache<Long> maxTimeSliceIdCache = SingleCache.build(10 * TimeUtils.MILLIS_PER_SECOND, new Supplier<Long>() {
+    private static SingleCache<Long> maxTimeSliceIdCache = SingleCache.build(3 * TimeUtils.MILLIS_PER_SECOND, new Supplier<Long>() {
         @Override
         public Long get() {
             return MongoIdUtils.getMaxIdFromMongoDefault(TimeSliceEntity.class);
@@ -56,7 +56,7 @@ public abstract class CommonUtils {
     /**
      * 获取group最大id，每1分钟刷新一次
      */
-    private static SingleCache<Long> maxGroupIdCache = SingleCache.build(10 * TimeUtils.MILLIS_PER_SECOND, new Supplier<Long>() {
+    private static SingleCache<Long> maxGroupIdCache = SingleCache.build(3 * TimeUtils.MILLIS_PER_SECOND, new Supplier<Long>() {
         @Override
         public Long get() {
             return MongoIdUtils.getMaxIdFromMongoDefault(GroupEntity.class);
@@ -66,7 +66,7 @@ public abstract class CommonUtils {
     /**
      * 获取channel最大id，每1分钟刷新一次
      */
-    private static SingleCache<Long> maxChannelIdCache = SingleCache.build(10 * TimeUtils.MILLIS_PER_SECOND, new Supplier<Long>() {
+    private static SingleCache<Long> maxChannelIdCache = SingleCache.build(3 * TimeUtils.MILLIS_PER_SECOND, new Supplier<Long>() {
         @Override
         public Long get() {
             return MongoIdUtils.getMaxIdFromMongoDefault(ChannelEntity.class);
@@ -76,7 +76,7 @@ public abstract class CommonUtils {
     /**
      * 获取word最大id，每1分钟刷新一次
      */
-    private static SingleCache<Long> maxWordIdCache = SingleCache.build(10 * TimeUtils.MILLIS_PER_SECOND, new Supplier<Long>() {
+    private static SingleCache<Long> maxWordIdCache = SingleCache.build(3 * TimeUtils.MILLIS_PER_SECOND, new Supplier<Long>() {
         @Override
         public Long get() {
             return MongoIdUtils.getMaxIdFromMongoDefault(WordEntity.class);
