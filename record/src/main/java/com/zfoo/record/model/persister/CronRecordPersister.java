@@ -164,7 +164,7 @@ public class CronRecordPersister extends AbstractRecordPersister {
         var delay = 0L;
         try {
             var now = TimeUtils.now();
-            var nextTimestamp = TimeUtils.getNextTimestampByCronExpression(cronExpression, now);
+            var nextTimestamp = TimeUtils.nextTimestampByCronExpression(cronExpression, now);
 
             delay = nextTimestamp - now;
 
