@@ -36,7 +36,7 @@ import com.zfoo.net.packet.common.Error;
 import com.zfoo.net.packet.common.Message;
 import com.zfoo.net.packet.model.GatewayPacketAttachment;
 import com.zfoo.net.session.model.Session;
-import com.zfoo.net.task.TaskManager;
+import com.zfoo.net.task.TaskBus;
 import com.zfoo.orm.OrmContext;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
 import com.zfoo.orm.model.cache.IEntityCaches;
@@ -194,7 +194,7 @@ public class FriendController {
                                     return;
                                 }
 
-                                TaskManager.getInstance().getExecutorByConsistentHash(HashUtils.fnvHash(cm.loadBalancerConsistentHashObject())).execute(new Runnable() {
+                                TaskBus.executor(HashUtils.fnvHash(cm.loadBalancerConsistentHashObject())).execute(new Runnable() {
                                     @Override
                                     public void run() {
 
