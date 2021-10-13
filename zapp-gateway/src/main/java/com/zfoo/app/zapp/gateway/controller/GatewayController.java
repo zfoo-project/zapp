@@ -60,7 +60,7 @@ public class GatewayController {
 
         NetContext.getConfigManager().consumerLoadBalancer()
                 .getSessionsByModule(ProtocolManager.moduleByModuleId(AppConstant.ZAPP_PUSH_MODULE_ID))
-                .forEach(it -> NetContext.getDispatcher().send(it, ask, null));
+                .forEach(it -> NetContext.getRouter().send(it, ask, null));
     }
 
     @EventReceiver
@@ -76,7 +76,7 @@ public class GatewayController {
 
         NetContext.getConfigManager().consumerLoadBalancer()
                 .getSessionsByModule(ProtocolManager.moduleByModuleId(AppConstant.ZAPP_PUSH_MODULE_ID))
-                .forEach(it -> NetContext.getDispatcher().send(it, ask, null));
+                .forEach(it -> NetContext.getRouter().send(it, ask, null));
     }
 
     /**
@@ -102,7 +102,7 @@ public class GatewayController {
                         , valueSession -> (Long) valueSession.getAttribute(AttributeType.UID)));
 
         var ask = GatewaySynchronizeSidAsk.valueOf(Application.GATEWAY_HOST_AND_PORT_STR, map);
-        NetContext.getDispatcher()
+        NetContext.getRouter()
                 .asyncAsk(session, ask, Message.class, null)
                 .whenComplete(message -> logger.info("同步网关信息[gateway{}][size:{}]成功", ask.getGatewayHostAndPort(), map.size()));
     }
@@ -125,7 +125,7 @@ public class GatewayController {
         NetContext.getConfigManager().consumerLoadBalancer()
                 .getSessionsByModule(ProtocolManager.moduleByModuleId(AppConstant.ZAPP_PUSH_MODULE_ID))
                 .forEach(it -> {
-                    NetContext.getDispatcher().asyncAsk(it, ask, Message.class, null)
+                    NetContext.getRouter().asyncAsk(it, ask, Message.class, null)
                             .whenComplete(message -> logger.info("同步网关信息[gateway{}][size:{}]成功", ask.getGatewayHostAndPort(), map.size()));
                 });
     }

@@ -24,9 +24,9 @@ import com.zfoo.app.zapp.common.protocol.user.info.GetUserProfileFollowAnswer;
 import com.zfoo.app.zapp.common.protocol.user.info.GetUserProfileFollowAsk;
 import com.zfoo.app.zapp.common.result.CodeEnum;
 import com.zfoo.net.NetContext;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
 import com.zfoo.net.packet.common.Error;
 import com.zfoo.net.packet.common.Message;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
 import com.zfoo.orm.model.cache.IEntityCaches;
@@ -52,11 +52,11 @@ public class FollowFanController {
         var userId = ask.getUserId();
         var userEntity = entityCaches.load(userId);
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
         var follows = userEntity.getFollows();
-        NetContext.getDispatcher().send(session, GetUserProfileFollowAnswer.valueOf(follows));
+        NetContext.getRouter().send(session, GetUserProfileFollowAnswer.valueOf(follows));
     }
 
     @PacketReceiver
@@ -64,18 +64,18 @@ public class FollowFanController {
         var userId = ask.getUserId();
         var userEntity = entityCaches.load(userId);
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
         var fans = userEntity.getFans();
-        NetContext.getDispatcher().send(session, GetUserProfileFanAnswer.valueOf(fans));
+        NetContext.getRouter().send(session, GetUserProfileFanAnswer.valueOf(fans));
     }
 
     @PacketReceiver
     public void atFanCancelUserAsk(Session session, FanCancelUserAsk ask) {
         var userEntity = entityCaches.load(ask.getUserId());
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
         var fanCancelUserId = ask.getFanUserId();
@@ -85,14 +85,14 @@ public class FollowFanController {
         }
         userEntity.setFanNum(Math.max(userEntity.getFanNum() - 1, 0));
         entityCaches.update(userEntity);
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
     @PacketReceiver
     public void atFanUserAsk(Session session, FanUserAsk ask) {
         var userEntity = entityCaches.load(ask.getUserId());
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
         var fanUserId = ask.getFanUserId();
@@ -105,7 +105,7 @@ public class FollowFanController {
         }
         userEntity.setFanNum(userEntity.getFanNum() + 1);
         entityCaches.update(userEntity);
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
 
@@ -113,7 +113,7 @@ public class FollowFanController {
     public void atFollowUserAsk(Session session, FollowUserAsk ask) {
         var userEntity = entityCaches.load(ask.getUserId());
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
         var followUserId = ask.getFollowUserId();
@@ -124,6 +124,6 @@ public class FollowFanController {
             follows.add(followUserId);
         }
         entityCaches.update(userEntity);
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 }

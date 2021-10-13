@@ -19,9 +19,9 @@ import com.zfoo.app.zapp.common.protocol.user.info.GetUserProfileStarAsk;
 import com.zfoo.app.zapp.common.protocol.user.time.StarTimeSliceAsk;
 import com.zfoo.app.zapp.common.result.CodeEnum;
 import com.zfoo.net.NetContext;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
 import com.zfoo.net.packet.common.Error;
 import com.zfoo.net.packet.common.Message;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
 import com.zfoo.orm.model.cache.IEntityCaches;
@@ -47,11 +47,11 @@ public class StarController {
         var userId = ask.getUserId();
         var userEntity = entityCaches.load(userId);
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
         var stars = userEntity.getStars();
-        NetContext.getDispatcher().send(session, GetUserProfileStarAnswer.valueOf(stars));
+        NetContext.getRouter().send(session, GetUserProfileStarAnswer.valueOf(stars));
     }
 
     @PacketReceiver
@@ -60,7 +60,7 @@ public class StarController {
         var tsId = ask.getTsId();
         var userEntity = entityCaches.load(userId);
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
 
@@ -72,7 +72,7 @@ public class StarController {
         }
 
         entityCaches.update(userEntity);
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
 }

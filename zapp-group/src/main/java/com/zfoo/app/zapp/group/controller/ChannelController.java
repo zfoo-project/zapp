@@ -25,9 +25,9 @@ import com.zfoo.app.zapp.common.protocol.push.group.GroupUpdatePush;
 import com.zfoo.app.zapp.common.result.CodeEnum;
 import com.zfoo.app.zapp.common.util.CommonUtils;
 import com.zfoo.net.NetContext;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
 import com.zfoo.net.packet.common.Error;
 import com.zfoo.net.packet.model.GatewayPacketAttachment;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
 import com.zfoo.orm.model.cache.IEntityCaches;
@@ -58,28 +58,28 @@ public class ChannelController {
         var channelBoxName = cm.getChannelBoxName();
 
         if (!CommonUtils.isGroupIdInRange(List.of(groupId))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         if (StringUtils.isBlank(channelBoxName)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
             return;
         }
 
         var groupEntity = groupEntityCaches.load(groupId);
         if (groupEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
         if (!groupEntity.memberOfMaxGroupAuth(userId).hasAuth(OperationEnum.CREATE_CHANNEL_BOX)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         // 查看新的channelBox是否已经存在
         if (groupEntity.getChannelBoxes().stream().anyMatch(it -> it.getName().equals(channelBoxName))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_CHANNEL_BOX_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_CHANNEL_BOX_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
@@ -90,7 +90,7 @@ public class ChannelController {
                     public void accept(WordFilterAnswer answer) {
                         // 敏感字符检测
                         if (CollectionUtils.isNotEmpty(answer.getFilterWords())) {
-                            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_WORD_FILTER_ERROR.getCode()), gatewayAttachment);
+                            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_WORD_FILTER_ERROR.getCode()), gatewayAttachment);
                             return;
                         }
 
@@ -98,7 +98,7 @@ public class ChannelController {
                         groupEntityCaches.update(groupEntity);
 
                         var groupVO = groupEntity.toGroupVO();
-                        NetContext.getDispatcher().send(session, CreateChannelBoxResponse.valueOf(groupVO), gatewayAttachment);
+                        NetContext.getRouter().send(session, CreateChannelBoxResponse.valueOf(groupVO), gatewayAttachment);
                         NetContext.getConsumer().send(GroupUpdatePush.valueOf(groupEntity.getPeople(), GroupUpdateNotice.valueOf(groupVO)), groupId);
                     }
                 });
@@ -113,22 +113,22 @@ public class ChannelController {
         var channelName = cm.getChannelName();
 
         if (!CommonUtils.isGroupIdInRange(List.of(groupId))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         if (StringUtils.isBlank(channelBoxName) || StringUtils.isBlank(channelName)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
             return;
         }
 
         var groupEntity = groupEntityCaches.load(groupId);
         if (groupEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
         if (!groupEntity.memberOfMaxGroupAuth(userId).hasAuth(OperationEnum.CREATE_CHANNEL)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
@@ -136,20 +136,20 @@ public class ChannelController {
                 .mapToInt(it -> it.getChannels().size())
                 .sum();
         if (channelSize > AppConstant.GROUP_CHANNEL_MAX_SIZE) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_MAX_CHANNEL_LIMIT.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_MAX_CHANNEL_LIMIT.getCode()), gatewayAttachment);
             return;
         }
 
         // 查看新的channelBox是否已经存在
         var channelBoxOptional = groupEntity.getChannelBoxes().stream().filter(it -> it.getName().equals(channelBoxName)).findFirst();
         if (channelBoxOptional.isEmpty()) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_CHANNEL_BOX_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_CHANNEL_BOX_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         var channelBoxPO = channelBoxOptional.get();
         if (channelBoxPO.getChannels().stream().anyMatch(it -> it.getName().equals(channelName))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_CHANNEL_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_CHANNEL_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
@@ -160,7 +160,7 @@ public class ChannelController {
                     public void accept(WordFilterAnswer answer) {
                         // 敏感字符检测
                         if (CollectionUtils.isNotEmpty(answer.getFilterWords())) {
-                            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_WORD_FILTER_ERROR.getCode()), gatewayAttachment);
+                            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_WORD_FILTER_ERROR.getCode()), gatewayAttachment);
                             return;
                         }
                         var channelId = MongoIdUtils.getIncrementIdFromMongoDefault(ChannelEntity.class);
@@ -169,7 +169,7 @@ public class ChannelController {
                         groupEntityCaches.update(groupEntity);
 
                         var groupVO = groupEntity.toGroupVO();
-                        NetContext.getDispatcher().send(session, CreateChannelResponse.valueOf(groupVO), gatewayAttachment);
+                        NetContext.getRouter().send(session, CreateChannelResponse.valueOf(groupVO), gatewayAttachment);
                         NetContext.getConsumer().send(GroupUpdatePush.valueOf(groupEntity.getPeople(), GroupUpdateNotice.valueOf(groupVO)), groupId);
                     }
                 });
@@ -183,33 +183,33 @@ public class ChannelController {
         var channelName = cm.getChannelName();
 
         if (!CommonUtils.isGroupIdInRange(List.of(groupId))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         if (StringUtils.isBlank(channelName)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
             return;
         }
 
         var groupEntity = groupEntityCaches.load(groupId);
         if (groupEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
         if (!groupEntity.memberOfMaxGroupAuth(userId).hasAuth(OperationEnum.CHANGE_CHANNEL_NAME)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         var channel = groupEntity.findChannel(channelId);
         if (channel == null) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_CHANNEL_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_CHANNEL_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         if (channel.getName().equals(channelName)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
@@ -220,14 +220,14 @@ public class ChannelController {
                     public void accept(WordFilterAnswer answer) {
                         // 敏感字符检测
                         if (CollectionUtils.isNotEmpty(answer.getFilterWords())) {
-                            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_WORD_FILTER_ERROR.getCode()), gatewayAttachment);
+                            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_WORD_FILTER_ERROR.getCode()), gatewayAttachment);
                             return;
                         }
                         channel.setName(channelName);
                         groupEntityCaches.update(groupEntity);
 
                         var groupVO = groupEntity.toGroupVO();
-                        NetContext.getDispatcher().send(session, SaveChannelResponse.valueOf(groupVO), gatewayAttachment);
+                        NetContext.getRouter().send(session, SaveChannelResponse.valueOf(groupVO), gatewayAttachment);
                         NetContext.getConsumer().send(GroupUpdatePush.valueOf(groupEntity.getPeople(), GroupUpdateNotice.valueOf(groupVO)), groupId);
                     }
                 });
@@ -242,33 +242,33 @@ public class ChannelController {
         var newChannelBoxName = cm.getNewChannelBoxName();
 
         if (!CommonUtils.isGroupIdInRange(List.of(groupId))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         if (StringUtils.isBlank(newChannelBoxName) || StringUtils.isBlank(oldChannelBoxName)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
             return;
         }
 
         var groupEntity = groupEntityCaches.load(groupId);
         if (groupEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
         if (!groupEntity.memberOfMaxGroupAuth(userId).hasAuth(OperationEnum.CHANGE_CHANNEL_BOX_NAME)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         var channelBox = groupEntity.findChannelBox(oldChannelBoxName);
         if (channelBox == null) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_CHANNEL_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_CHANNEL_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         if (channelBox.getName().equals(newChannelBoxName)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
@@ -279,14 +279,14 @@ public class ChannelController {
                     public void accept(WordFilterAnswer answer) {
                         // 敏感字符检测
                         if (CollectionUtils.isNotEmpty(answer.getFilterWords())) {
-                            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_WORD_FILTER_ERROR.getCode()), gatewayAttachment);
+                            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_WORD_FILTER_ERROR.getCode()), gatewayAttachment);
                             return;
                         }
                         channelBox.setName(newChannelBoxName);
                         groupEntityCaches.update(groupEntity);
 
                         var groupVO = groupEntity.toGroupVO();
-                        NetContext.getDispatcher().send(session, SaveChannelBoxResponse.valueOf(groupVO), gatewayAttachment);
+                        NetContext.getRouter().send(session, SaveChannelBoxResponse.valueOf(groupVO), gatewayAttachment);
                         NetContext.getConsumer().send(GroupUpdatePush.valueOf(groupEntity.getPeople(), GroupUpdateNotice.valueOf(groupVO)), groupId);
                     }
                 });
@@ -299,28 +299,28 @@ public class ChannelController {
         var channelBoxName = cm.getChannelBoxName();
 
         if (!CommonUtils.isGroupIdInRange(List.of(groupId))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         if (StringUtils.isBlank(channelBoxName)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
             return;
         }
 
         var groupEntity = groupEntityCaches.load(groupId);
         if (groupEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
         if (!groupEntity.memberOfMaxGroupAuth(userId).hasAuth(OperationEnum.DELETE_CHANNEL_BOX)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         // 查看新的channelBox是否已经存在
         if (groupEntity.getChannelBoxes().stream().noneMatch(it -> it.getName().equals(channelBoxName))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_CHANNEL_BOX_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_CHANNEL_BOX_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
@@ -328,7 +328,7 @@ public class ChannelController {
         groupEntityCaches.update(groupEntity);
 
         var groupVO = groupEntity.toGroupVO();
-        NetContext.getDispatcher().send(session, DeleteChannelBoxResponse.valueOf(groupVO), gatewayAttachment);
+        NetContext.getRouter().send(session, DeleteChannelBoxResponse.valueOf(groupVO), gatewayAttachment);
         NetContext.getConsumer().send(GroupUpdatePush.valueOf(groupEntity.getPeople(), GroupUpdateNotice.valueOf(groupVO)), groupId);
     }
 
@@ -340,23 +340,23 @@ public class ChannelController {
         var channelId = cm.getChannelId();
 
         if (!CommonUtils.isGroupIdInRange(List.of(groupId))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         if (!CommonUtils.isChannelIdInRange(List.of(channelId))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_CHANNEL_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_CHANNEL_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
 
         var groupEntity = groupEntityCaches.load(groupId);
         if (groupEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
         if (!groupEntity.memberOfMaxGroupAuth(userId).hasAuth(OperationEnum.DELETE_CHANNEL)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
@@ -366,14 +366,14 @@ public class ChannelController {
         }
 
         if (!removed) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_CHANNEL_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_CHANNEL_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         groupEntityCaches.update(groupEntity);
 
         var groupVO = groupEntity.toGroupVO();
-        NetContext.getDispatcher().send(session, DeleteChannelResponse.valueOf(groupVO), gatewayAttachment);
+        NetContext.getRouter().send(session, DeleteChannelResponse.valueOf(groupVO), gatewayAttachment);
         NetContext.getConsumer().send(GroupUpdatePush.valueOf(groupEntity.getPeople(), GroupUpdateNotice.valueOf(groupVO)), groupId);
     }
 

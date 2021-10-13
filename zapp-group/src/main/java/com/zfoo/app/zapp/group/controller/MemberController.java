@@ -33,10 +33,10 @@ import com.zfoo.app.zapp.common.util.CommonUtils;
 import com.zfoo.app.zapp.common.util.GroupUtils;
 import com.zfoo.app.zapp.group.service.IGroupService;
 import com.zfoo.net.NetContext;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
 import com.zfoo.net.packet.common.Error;
 import com.zfoo.net.packet.common.Message;
 import com.zfoo.net.packet.model.GatewayPacketAttachment;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
 import com.zfoo.orm.model.cache.IEntityCaches;
@@ -71,22 +71,22 @@ public class MemberController {
         var countEnum = InviteCountEnum.getInviteCountEnumByType(cm.getCountType());
 
         if (!CommonUtils.isGroupIdInRange(List.of(groupId))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         if (expireEnum == null || countEnum == null) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         var groupEntity = groupEntityCaches.load(groupId);
         if (groupEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR_ONE.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR_ONE.getCode()), gatewayAttachment);
             return;
         }
         if (!groupEntity.memberOfMaxGroupAuth(userId).hasAuth(OperationEnum.CREATE_INVITE_CODE)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
@@ -95,7 +95,7 @@ public class MemberController {
         groupEntity.getInviteCodes().add(InviteCodePO.valueOf(inviteCode, expireEnum.getType(), expireTime, countEnum.getType(), 0));
         groupEntityCaches.update(groupEntity);
 
-        NetContext.getDispatcher().send(session
+        NetContext.getRouter().send(session
                 , CreateInviteGroupCodeResponse.valueOf(groupEntity.getInviteCodes().stream().map(it -> it.toInviteCodeVO()).collect(Collectors.toList()))
                 , gatewayAttachment);
     }
@@ -110,13 +110,13 @@ public class MemberController {
         var groupId = pair.getKey();
 
         if (!CommonUtils.isGroupIdInRange(List.of(groupId))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         var groupEntity = groupEntityCaches.load(groupId);
         if (groupEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
         // 移除过期的邀请码
@@ -125,7 +125,7 @@ public class MemberController {
         var inviteCodeOptional = groupEntity.getInviteCodes().stream().filter(it -> it.getCode().equals(inviteCode)).findFirst();
 
         if (inviteCodeOptional.isEmpty()) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_INVITE_CODE_EXPIRE.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_INVITE_CODE_EXPIRE.getCode()), gatewayAttachment);
             return;
         }
 
@@ -133,20 +133,20 @@ public class MemberController {
 
         // 验证邀请码时间，即使过期也不能删除邀请码
         if (TimeUtils.now() > inviteCodePO.getExpireTime()) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_INVITE_CODE_EXPIRE.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_INVITE_CODE_EXPIRE.getCode()), gatewayAttachment);
             return;
         }
 
         // 验证邀请码人数上限
         var countEnum = InviteCountEnum.getInviteCountEnumByType(inviteCodePO.getCountType());
         if (countEnum != InviteCountEnum.COUNT_UNLIMITED && inviteCodePO.getCount() >= countEnum.getCount()) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_INVITE_CODE_EXPIRE.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_INVITE_CODE_EXPIRE.getCode()), gatewayAttachment);
             return;
         }
 
         // 验证是否已经加入群组
         if (groupEntity.getPeople().contains(userId)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_JOIN_ALREADY.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_JOIN_ALREADY.getCode()), gatewayAttachment);
             return;
         }
 
@@ -155,7 +155,7 @@ public class MemberController {
                 .asyncAsk(JoinGroupAsk.valueOf(userId, groupId), Message.class, userId)
                 .whenComplete(message -> {
                     if (!message.success()) {
-                        NetContext.getDispatcher().send(session, Error.valueOf(cm, message.getCode(), message.getMessage()), gatewayAttachment);
+                        NetContext.getRouter().send(session, Error.valueOf(cm, message.getCode(), message.getMessage()), gatewayAttachment);
                         return;
                     }
 
@@ -163,7 +163,7 @@ public class MemberController {
                     groupEntity.getPeople().add(userId);
                     groupEntityCaches.update(groupEntity);
 
-                    NetContext.getDispatcher().send(session, JoinGroupResponse.valueOf(), gatewayAttachment);
+                    NetContext.getRouter().send(session, JoinGroupResponse.valueOf(), gatewayAttachment);
                     NetContext.getConsumer().send(GroupUpdatePush.valueOf(Set.of(userId), GroupUpdateNotice.valueOf(groupEntity.toGroupVO())), groupId);
                     NetContext.getConsumer().send(MemberGroupAuthIdUpdatePush.valueOf(userId
                             , MemberGroupAuthIdUpdateNotice.valueOf(groupId, userId, groupEntity.toGroupAuthIds(userId))), groupId);
@@ -176,20 +176,20 @@ public class MemberController {
         var groupId = -cm.getUserId();
 
         if (!CommonUtils.isGroupIdInRange(List.of(groupId))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         var groupEntity = groupEntityCaches.load(groupId);
 
         if (groupEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         // 只有用户公共的群组可以加入
         if (groupId != -groupEntity.getAdminId()) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR_ONE.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR_ONE.getCode()), gatewayAttachment);
             return;
         }
 
@@ -199,7 +199,7 @@ public class MemberController {
         }
 
         if (groupEntity.getAdminId() < 0) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR_TWO.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR_TWO.getCode()), gatewayAttachment);
             return;
         }
 
@@ -207,14 +207,14 @@ public class MemberController {
                 .asyncAsk(JoinGroupAsk.valueOf(userId, groupId), Message.class, userId)
                 .whenComplete(message -> {
                     if (!message.success()) {
-                        NetContext.getDispatcher().send(session, Error.valueOf(cm, message.getCode(), message.getMessage()), gatewayAttachment);
+                        NetContext.getRouter().send(session, Error.valueOf(cm, message.getCode(), message.getMessage()), gatewayAttachment);
                         return;
                     }
 
                     groupEntity.getPeople().add(userId);
                     groupEntityCaches.update(groupEntity);
 
-                    NetContext.getDispatcher().send(session, JoinGroupResponse.valueOf(), gatewayAttachment);
+                    NetContext.getRouter().send(session, JoinGroupResponse.valueOf(), gatewayAttachment);
                     NetContext.getConsumer().send(GroupUpdatePush.valueOf(Set.of(userId), GroupUpdateNotice.valueOf(groupEntity.toGroupVO())), groupId);
                     NetContext.getConsumer().send(MemberGroupAuthIdUpdatePush.valueOf(userId
                             , MemberGroupAuthIdUpdateNotice.valueOf(groupId, userId, groupEntity.toGroupAuthIds(userId))), groupId);
@@ -231,24 +231,24 @@ public class MemberController {
         var groupId = pair.getKey();
 
         if (!CommonUtils.isGroupIdInRange(List.of(groupId))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         var groupEntity = groupEntityCaches.load(groupId);
         if (groupEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
         if (!groupEntity.memberOfMaxGroupAuth(userId).hasAuth(OperationEnum.DELETE_INVITE_CODE)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         // 移除过期的邀请码
         groupEntity.getInviteCodes().removeIf(it -> it.getCode().equals(inviteCode));
 
-        NetContext.getDispatcher().send(session
+        NetContext.getRouter().send(session
                 , DeleteInviteGroupCodeResponse.valueOf(groupEntity.getInviteCodes().stream().map(it -> it.toInviteCodeVO()).collect(Collectors.toList()))
                 , gatewayAttachment);
     }
@@ -259,29 +259,29 @@ public class MemberController {
         var groupId = cm.getGroupId();
 
         if (!CommonUtils.isGroupIdInRange(List.of(groupId))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         // 不能退出官方群组
         if (groupId == AppConstant.ZFOO_GROUP_ID) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_LEAVE_ZFOO_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_LEAVE_ZFOO_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         // 不能退出自己的公共群组
         if (groupId == -userId) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_LEAVE_SELF_GROUP_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_LEAVE_SELF_GROUP_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         var groupEntity = groupEntityCaches.load(groupId);
         if (groupEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
         if (groupEntity.memberOfMaxGroupAuth(userId) == GroupAuthEnum.ADMIN_AUTH) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_ADMIN_CAN_NOT_LEAVE_GROUP.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_ADMIN_CAN_NOT_LEAVE_GROUP.getCode()), gatewayAttachment);
             return;
         }
 
@@ -290,14 +290,14 @@ public class MemberController {
                 .asyncAsk(LeaveGroupAsk.valueOf(userId, groupId), Message.class, userId)
                 .whenComplete(message -> {
                     if (!message.success()) {
-                        NetContext.getDispatcher().send(session, Error.valueOf(cm, message.getCode(), message.getMessage()), gatewayAttachment);
+                        NetContext.getRouter().send(session, Error.valueOf(cm, message.getCode(), message.getMessage()), gatewayAttachment);
                         return;
                     }
 
                     groupService.removeMemberFromGroup(groupEntity, userId);
                     groupEntityCaches.update(groupEntity);
 
-                    NetContext.getDispatcher().send(session, LeaveGroupResponse.valueOf(groupId, groupEntity.getName()), gatewayAttachment);
+                    NetContext.getRouter().send(session, LeaveGroupResponse.valueOf(groupId, groupEntity.getName()), gatewayAttachment);
                 });
     }
 
@@ -308,27 +308,27 @@ public class MemberController {
         var memberId = cm.getMemberId();
 
         if (!CommonUtils.isGroupIdInRange(List.of(groupId))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         var groupEntity = groupEntityCaches.load(groupId);
         if (groupEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
         if (!groupEntity.memberOfMaxGroupAuth(userId).hasAuth(OperationEnum.ACCESS_INVITE_CODE)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         if (groupEntity.memberOfMaxGroupAuth(memberId) == GroupAuthEnum.ADMIN_AUTH) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_ADMIN_CAN_NOT_LEAVE_GROUP.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_ADMIN_CAN_NOT_LEAVE_GROUP.getCode()), gatewayAttachment);
             return;
         }
 
         if (!groupEntity.getPeople().contains(memberId)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_HAVE_MEMBER.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_HAVE_MEMBER.getCode()), gatewayAttachment);
             return;
         }
 
@@ -337,14 +337,14 @@ public class MemberController {
                 .asyncAsk(LeaveGroupAsk.valueOf(memberId, groupId), Message.class, memberId)
                 .whenComplete(message -> {
                     if (!message.success()) {
-                        NetContext.getDispatcher().send(session, Error.valueOf(cm, message.getCode(), message.getMessage()), gatewayAttachment);
+                        NetContext.getRouter().send(session, Error.valueOf(cm, message.getCode(), message.getMessage()), gatewayAttachment);
                         return;
                     }
 
                     groupService.removeMemberFromGroup(groupEntity, memberId);
                     groupEntityCaches.update(groupEntity);
 
-                    NetContext.getDispatcher().send(session, KickMemberResponse.valueOf(groupId, memberId), gatewayAttachment);
+                    NetContext.getRouter().send(session, KickMemberResponse.valueOf(groupId, memberId), gatewayAttachment);
                     NetContext.getConsumer().send(KickMemberPush.valueOf(memberId, KickMemberNotice.valueOf(groupId, memberId)), groupId);
                 });
     }
@@ -356,22 +356,22 @@ public class MemberController {
         var groupId = cm.getGroupId();
 
         if (!CommonUtils.isGroupIdInRange(List.of(groupId))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         var groupEntity = groupEntityCaches.load(groupId);
         if (groupEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
         if (!groupEntity.memberOfMaxGroupAuth(userId).hasAuth(OperationEnum.ACCESS_INVITE_CODE)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
 
-        NetContext.getDispatcher().send(session
+        NetContext.getRouter().send(session
                 , AllInviteGroupCodeResponse.valueOf(groupEntity.getInviteCodes().stream().map(it -> it.toInviteCodeVO()).collect(Collectors.toList()))
                 , gatewayAttachment);
     }
@@ -384,17 +384,17 @@ public class MemberController {
         var page = cm.getPage();
 
         if (!CommonUtils.isGroupIdInRange(List.of(groupId))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         var groupEntity = groupEntityCaches.load(groupId);
         if (groupEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
         if (!groupEntity.getPeople().contains(userId)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_JOIN_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_JOIN_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
@@ -426,7 +426,7 @@ public class MemberController {
         var memberList = memberPage.currentPageList(members);
 
         if (CollectionUtils.isEmpty(memberList)) {
-            NetContext.getDispatcher().send(session, GroupMemberListResponse.valueOf(groupId, page, Collections.EMPTY_LIST), gatewayAttachment);
+            NetContext.getRouter().send(session, GroupMemberListResponse.valueOf(groupId, page, Collections.EMPTY_LIST), gatewayAttachment);
             return;
         }
 
@@ -440,7 +440,7 @@ public class MemberController {
                             .map(it -> GroupMemberVO.valueOf(groupEntity.toGroupAuthIds(it.getKey()), it.getValue()))
                             .collect(Collectors.toList());
 
-                    NetContext.getDispatcher().send(session, GroupMemberListResponse.valueOf(groupId, page, memberVOs), gatewayAttachment);
+                    NetContext.getRouter().send(session, GroupMemberListResponse.valueOf(groupId, page, memberVOs), gatewayAttachment);
                 });
     }
 
@@ -451,22 +451,22 @@ public class MemberController {
         var members = cm.getMembers();
 
         if (!CommonUtils.isGroupIdInRange(List.of(groupId))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         if (CollectionUtils.isEmpty(members)) {
-            NetContext.getDispatcher().send(session, GroupMemberInfoResponse.valueOf(groupId, Collections.EMPTY_LIST), gatewayAttachment);
+            NetContext.getRouter().send(session, GroupMemberInfoResponse.valueOf(groupId, Collections.EMPTY_LIST), gatewayAttachment);
             return;
         }
 
         var groupEntity = groupEntityCaches.load(groupId);
         if (groupEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
         if (!groupEntity.getPeople().contains(userId)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_JOIN_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_JOIN_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
@@ -480,7 +480,7 @@ public class MemberController {
                             .map(it -> GroupMemberVO.valueOf(groupEntity.toGroupAuthIds(it.getKey()), it.getValue()))
                             .collect(Collectors.toList());
 
-                    NetContext.getDispatcher().send(session, GroupMemberInfoResponse.valueOf(groupId, memberVOs), gatewayAttachment);
+                    NetContext.getRouter().send(session, GroupMemberInfoResponse.valueOf(groupId, memberVOs), gatewayAttachment);
                 });
     }
 }

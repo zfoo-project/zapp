@@ -16,7 +16,7 @@ package com.zfoo.app.zapp.push.controller;
 import com.zfoo.app.zapp.common.protocol.push.friend.*;
 import com.zfoo.app.zapp.push.sid.service.ISidSessionService;
 import com.zfoo.net.NetContext;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.protocol.collection.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class FriendPushController {
         }
 
         for (var entry : uidMap.entrySet()) {
-            NetContext.getDispatcher().send(entry.getKey(), ApplyFriendPushToGateway.valueOf(entry.getValue(), push.getNotice()));
+            NetContext.getRouter().send(entry.getKey(), ApplyFriendPushToGateway.valueOf(entry.getValue(), push.getNotice()));
         }
 
     }
@@ -65,7 +65,7 @@ public class FriendPushController {
         }
 
         for (var entry : uidMap.entrySet()) {
-            NetContext.getDispatcher().send(entry.getKey(), AcceptFriendPushToGateway.valueOf(entry.getValue(), push.getNotice()));
+            NetContext.getRouter().send(entry.getKey(), AcceptFriendPushToGateway.valueOf(entry.getValue(), push.getNotice()));
         }
 
     }
@@ -84,7 +84,7 @@ public class FriendPushController {
         }
 
         for (var entry : uidMap.entrySet()) {
-            NetContext.getDispatcher().send(entry.getKey(), FriendChatMessagePushToGateway.valueOf(entry.getValue(), push.getNotice()));
+            NetContext.getRouter().send(entry.getKey(), FriendChatMessagePushToGateway.valueOf(entry.getValue(), push.getNotice()));
         }
     }
 
@@ -102,7 +102,7 @@ public class FriendPushController {
         }
 
         for (var entry : uidMap.entrySet()) {
-            NetContext.getDispatcher().send(entry.getKey(), DeleteFriendMessagePushToGateway.valueOf(entry.getValue(), push.getNotice()));
+            NetContext.getRouter().send(entry.getKey(), DeleteFriendMessagePushToGateway.valueOf(entry.getValue(), push.getNotice()));
         }
     }
 
@@ -120,7 +120,7 @@ public class FriendPushController {
         }
 
         for (var entry : uidMap.entrySet()) {
-            NetContext.getDispatcher().send(entry.getKey(), EditFriendMessagePushToGateway.valueOf(entry.getValue(), push.getNotice()));
+            NetContext.getRouter().send(entry.getKey(), EditFriendMessagePushToGateway.valueOf(entry.getValue(), push.getNotice()));
         }
     }
 

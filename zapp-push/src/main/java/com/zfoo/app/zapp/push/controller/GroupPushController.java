@@ -16,7 +16,7 @@ package com.zfoo.app.zapp.push.controller;
 import com.zfoo.app.zapp.common.protocol.push.group.*;
 import com.zfoo.app.zapp.push.sid.service.ISidSessionService;
 import com.zfoo.net.NetContext;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.protocol.collection.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,7 @@ public class GroupPushController {
         }
 
         for (var entry : uidMap.entrySet()) {
-            NetContext.getDispatcher().send(entry.getKey(), DeleteGroupPushToGateway.valueOf(entry.getValue(), push.getNotice()));
+            NetContext.getRouter().send(entry.getKey(), DeleteGroupPushToGateway.valueOf(entry.getValue(), push.getNotice()));
         }
     }
 
@@ -59,7 +59,7 @@ public class GroupPushController {
         }
 
         for (var entry : uidMap.entrySet()) {
-            NetContext.getDispatcher().send(entry.getKey(), GroupUpdatePushToGateway.valueOf(entry.getValue(), push.getNotice()));
+            NetContext.getRouter().send(entry.getKey(), GroupUpdatePushToGateway.valueOf(entry.getValue(), push.getNotice()));
         }
     }
 
@@ -77,7 +77,7 @@ public class GroupPushController {
         }
 
         for (var entry : uidMap.entrySet()) {
-            NetContext.getDispatcher().send(entry.getKey(), GroupChatMessagePushToGateway.valueOf(entry.getValue(), push.getNotice()));
+            NetContext.getRouter().send(entry.getKey(), GroupChatMessagePushToGateway.valueOf(entry.getValue(), push.getNotice()));
         }
     }
 
@@ -91,7 +91,7 @@ public class GroupPushController {
         }
 
         for (var entry : uidMap.entrySet()) {
-            NetContext.getDispatcher().send(entry.getKey(), MemberGroupAuthIdUpdatePushToGateway.valueOf(entry.getValue(), push.getNotice()));
+            NetContext.getRouter().send(entry.getKey(), MemberGroupAuthIdUpdatePushToGateway.valueOf(entry.getValue(), push.getNotice()));
         }
     }
 
@@ -105,7 +105,7 @@ public class GroupPushController {
         }
 
         for (var entry : uidMap.entrySet()) {
-            NetContext.getDispatcher().send(entry.getKey(), KickMemberPushToGateway.valueOf(entry.getValue(), push.getNotice()));
+            NetContext.getRouter().send(entry.getKey(), KickMemberPushToGateway.valueOf(entry.getValue(), push.getNotice()));
         }
     }
 
@@ -123,7 +123,7 @@ public class GroupPushController {
         }
 
         for (var entry : uidMap.entrySet()) {
-            NetContext.getDispatcher().send(entry.getKey(), DeleteGroupMessagePushToGateway.valueOf(entry.getValue(), push.getNotice()));
+            NetContext.getRouter().send(entry.getKey(), DeleteGroupMessagePushToGateway.valueOf(entry.getValue(), push.getNotice()));
         }
     }
 
@@ -141,7 +141,7 @@ public class GroupPushController {
         }
 
         for (var entry : uidMap.entrySet()) {
-            NetContext.getDispatcher().send(entry.getKey(), EditGroupMessagePushToGateway.valueOf(entry.getValue(), push.getNotice()));
+            NetContext.getRouter().send(entry.getKey(), EditGroupMessagePushToGateway.valueOf(entry.getValue(), push.getNotice()));
         }
     }
 }

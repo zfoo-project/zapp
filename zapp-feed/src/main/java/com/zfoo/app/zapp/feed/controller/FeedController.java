@@ -22,7 +22,7 @@ import com.zfoo.app.zapp.common.protocol.feed.location.LoveTsWithLocationAsk;
 import com.zfoo.app.zapp.common.protocol.feed.person.CreateTsWithPersonAsk;
 import com.zfoo.app.zapp.common.protocol.feed.person.LoveTsWithPersonAsk;
 import com.zfoo.app.zapp.feed.service.IFeedService;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

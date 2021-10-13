@@ -21,9 +21,9 @@ import com.zfoo.app.zapp.common.result.CodeEnum;
 import com.zfoo.app.zapp.user.group.service.IGroupService;
 import com.zfoo.app.zapp.user.login.service.ILoginService;
 import com.zfoo.net.NetContext;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
 import com.zfoo.net.packet.common.Error;
 import com.zfoo.net.packet.common.Message;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.OrmContext;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
@@ -61,7 +61,7 @@ public class WeChatLoginController {
 
         var pair = loginService.weChatSignIn(ask.getUnionid());
 
-        NetContext.getDispatcher().send(session, WeChatSignInAnswer.valueOf(pair.getKey(), pair.getValue()));
+        NetContext.getRouter().send(session, WeChatSignInAnswer.valueOf(pair.getKey(), pair.getValue()));
     }
 
     @PacketReceiver
@@ -73,18 +73,18 @@ public class WeChatLoginController {
 
         var weChatEntity = OrmContext.getAccessor().load(unionid, WeChatEntity.class);
         if (weChatEntity != null) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.USER_BIND_WECHAT_ERROR.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.USER_BIND_WECHAT_ERROR.getCode()));
             return;
         }
 
         var weChatList = OrmContext.getQuery().queryFieldEqual("uid", userId, WeChatEntity.class);
         if (CollectionUtils.isNotEmpty(weChatList)) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.USER_ALREADY_BIND_WECHAT_ERROR.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.USER_ALREADY_BIND_WECHAT_ERROR.getCode()));
             return;
         }
 
         OrmContext.getAccessor().insert(WeChatEntity.valueOf(unionid, userId));
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
     @PacketReceiver
@@ -95,12 +95,12 @@ public class WeChatLoginController {
 
         var weChatList = OrmContext.getQuery().queryFieldEqual("uid", userId, WeChatEntity.class);
         if (CollectionUtils.isEmpty(weChatList)) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.USER_BIND_WECHAT_EMPTY_ERROR.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.USER_BIND_WECHAT_EMPTY_ERROR.getCode()));
             return;
         }
 
         OrmContext.getAccessor().delete(weChatList.get(0));
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
     @PacketReceiver
@@ -113,7 +113,7 @@ public class WeChatLoginController {
 
         var userEntity = entityCaches.load(ask.getUid());
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
         userEntity.setName(name);
@@ -125,7 +125,7 @@ public class WeChatLoginController {
 
         entityCaches.update(userEntity);
 
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode(), CodeEnum.OK.getMessage()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode(), CodeEnum.OK.getMessage()));
     }
 
 }

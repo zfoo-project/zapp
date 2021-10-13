@@ -21,7 +21,7 @@ import com.zfoo.app.zapp.common.result.CodeEnum;
 import com.zfoo.app.zapp.user.login.model.LoginEvent;
 import com.zfoo.event.model.anno.EventReceiver;
 import com.zfoo.net.NetContext;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
 import com.zfoo.orm.model.cache.IEntityCaches;
@@ -61,19 +61,19 @@ public class CoinController {
 
         var userEntity = entityCaches.load(userId);
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, CoinConsumeAnswer.valueOf(CodeEnum.USER_NOT_EXIST));
+            NetContext.getRouter().send(session, CoinConsumeAnswer.valueOf(CodeEnum.USER_NOT_EXIST));
             return;
         }
 
         var coin = userEntity.getCoin();
         if (coin - coinConsume < AppConstant.CREDIT_COIN_NUM) {
-            NetContext.getDispatcher().send(session, CoinConsumeAnswer.valueOf(CodeEnum.COIN_NOT_ENOUGH));
+            NetContext.getRouter().send(session, CoinConsumeAnswer.valueOf(CodeEnum.COIN_NOT_ENOUGH));
             return;
         }
 
         userEntity.setCoin(coin - coinConsume);
         entityCaches.update(userEntity);
-        NetContext.getDispatcher().send(session, CoinConsumeAnswer.valueOf(CodeEnum.OK, userEntity.getCoin()));
+        NetContext.getRouter().send(session, CoinConsumeAnswer.valueOf(CodeEnum.OK, userEntity.getCoin()));
     }
 
 }

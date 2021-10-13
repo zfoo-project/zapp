@@ -19,8 +19,8 @@ import com.zfoo.net.NetContext;
 import com.zfoo.net.core.gateway.model.AuthUidAsk;
 import com.zfoo.net.core.gateway.model.GatewaySessionInactiveAsk;
 import com.zfoo.net.core.gateway.model.GatewaySynchronizeSidAsk;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
 import com.zfoo.net.packet.common.Message;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +68,7 @@ public class GatewayController {
 
         logger.info("gatewaySessionInactiveAsk[gatewayHostAndPort:{}]", gatewayHostAndPort);
 
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode(), null));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode(), null));
 
         sidSessionService.synchronizeSid(session, gatewayHostAndPort, sidMap);
     }

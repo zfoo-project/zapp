@@ -33,8 +33,8 @@ import com.zfoo.app.zapp.user.login.service.ILoginService;
 import com.zfoo.net.NetContext;
 import com.zfoo.net.core.gateway.model.AuthUidToGatewayCheck;
 import com.zfoo.net.core.gateway.model.AuthUidToGatewayConfirm;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
 import com.zfoo.net.packet.model.GatewayPacketAttachment;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.OrmContext;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
@@ -77,7 +77,7 @@ public class LoginController {
         var userId = TokenUtils.get(cm.getToken()).getLeft();
         var userEntity = entityCaches.load(userId);
         // 授权给网关uid
-        NetContext.getDispatcher().send(session, AuthUidToGatewayCheck.valueOf(userEntity.id()), gatewayAttachment);
+        NetContext.getRouter().send(session, AuthUidToGatewayCheck.valueOf(userEntity.id()), gatewayAttachment);
     }
 
     @PacketReceiver
@@ -181,7 +181,7 @@ public class LoginController {
                     var memberGroupAuthIdVOs = groupList.stream().map(it -> GroupMemberSimpleVO.valueOf(it.getId(), userId, groupTimeMap.get(it.getId()).toGroupTimeVO(), it.toGroupAuthIds(userId))).collect(Collectors.toList());
 
                     // 返回登录信息
-                    NetContext.getDispatcher().send(session, WebsocketSignInResponse.valueOf(userId
+                    NetContext.getRouter().send(session, WebsocketSignInResponse.valueOf(userId
                             , friends, blacklist, applyFriends, friendInfoMap
                             , groupVOList, memberGroupAuthIdVOs), gatewayAttachment);
                 });
@@ -190,13 +190,13 @@ public class LoginController {
     @PacketReceiver
     public void atSignInByAccountAsk(Session session, SignInByAccountAsk ask) {
         var token = loginService.signInByAccount(ask.getAccount(), ask.getPassword());
-        NetContext.getDispatcher().send(session, SignInAnswer.valueOf(token, false));
+        NetContext.getRouter().send(session, SignInAnswer.valueOf(token, false));
     }
 
     @PacketReceiver
     public void atSignInByPhoneAsk(Session session, SignInByPhoneAsk ask) {
         var pair = loginService.signInByPhone(ask.getPhoneNumber());
-        NetContext.getDispatcher().send(session, SignInAnswer.valueOf(pair.getKey(), pair.getValue()));
+        NetContext.getRouter().send(session, SignInAnswer.valueOf(pair.getKey(), pair.getValue()));
     }
 
 }

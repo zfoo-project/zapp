@@ -16,7 +16,7 @@ package com.zfoo.app.zapp.gateway.controller;
 import com.zfoo.app.zapp.common.protocol.push.friend.*;
 import com.zfoo.app.zapp.common.protocol.push.group.*;
 import com.zfoo.net.NetContext;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +32,7 @@ public class PushController {
     public void atApplyFriendPushToGateway(Session session, ApplyFriendPushToGateway push) {
         for (var sid : push.getSidSet()) {
             var pushSession = NetContext.getSessionManager().getServerSession(sid);
-            NetContext.getDispatcher().send(pushSession, push.getNotice());
+            NetContext.getRouter().send(pushSession, push.getNotice());
         }
     }
 
@@ -40,7 +40,7 @@ public class PushController {
     public void atAcceptFriendPushToGateway(Session session, AcceptFriendPushToGateway push) {
         for (var sid : push.getSidSet()) {
             var pushSession = NetContext.getSessionManager().getServerSession(sid);
-            NetContext.getDispatcher().send(pushSession, push.getNotice());
+            NetContext.getRouter().send(pushSession, push.getNotice());
         }
     }
 
@@ -48,7 +48,7 @@ public class PushController {
     public void atFriendChatMessagePushToGateway(Session session, FriendChatMessagePushToGateway push) {
         for (var sid : push.getSidSet()) {
             var pushSession = NetContext.getSessionManager().getServerSession(sid);
-            NetContext.getDispatcher().send(pushSession, push.getNotice());
+            NetContext.getRouter().send(pushSession, push.getNotice());
         }
     }
 
@@ -56,7 +56,7 @@ public class PushController {
     public void atDeleteFriendMessagePushToGateway(Session session, DeleteFriendMessagePushToGateway push) {
         for (var sid : push.getSidSet()) {
             var pushSession = NetContext.getSessionManager().getServerSession(sid);
-            NetContext.getDispatcher().send(pushSession, push.getNotice());
+            NetContext.getRouter().send(pushSession, push.getNotice());
         }
     }
 
@@ -64,7 +64,7 @@ public class PushController {
     public void atEditFriendMessagePushToGateway(Session session, EditFriendMessagePushToGateway push) {
         for (var sid : push.getSidSet()) {
             var pushSession = NetContext.getSessionManager().getServerSession(sid);
-            NetContext.getDispatcher().send(pushSession, push.getNotice());
+            NetContext.getRouter().send(pushSession, push.getNotice());
         }
     }
 
@@ -72,7 +72,7 @@ public class PushController {
     public void atDeleteGroupPushToGateway(Session session, DeleteGroupPushToGateway push) {
         for (var sid : push.getSidSet()) {
             var pushSession = NetContext.getSessionManager().getServerSession(sid);
-            NetContext.getDispatcher().send(pushSession, push.getNotice());
+            NetContext.getRouter().send(pushSession, push.getNotice());
         }
     }
 
@@ -80,7 +80,7 @@ public class PushController {
     public void atGroupUpdatePushToGateway(Session session, GroupUpdatePushToGateway push) {
         for (var sid : push.getSidSet()) {
             var pushSession = NetContext.getSessionManager().getServerSession(sid);
-            NetContext.getDispatcher().send(pushSession, push.getNotice());
+            NetContext.getRouter().send(pushSession, push.getNotice());
         }
     }
 
@@ -88,7 +88,7 @@ public class PushController {
     public void atGroupChatMessagePushToGateway(Session session, GroupChatMessagePushToGateway push) {
         for (var sid : push.getSidSet()) {
             var pushSession = NetContext.getSessionManager().getServerSession(sid);
-            NetContext.getDispatcher().send(pushSession, push.getNotice());
+            NetContext.getRouter().send(pushSession, push.getNotice());
         }
     }
 
@@ -96,7 +96,7 @@ public class PushController {
     public void atMemberGroupAuthIdUpdatePushToGateway(Session session, MemberGroupAuthIdUpdatePushToGateway push) {
         for (var sid : push.getSidSet()) {
             var pushSession = NetContext.getSessionManager().getServerSession(sid);
-            NetContext.getDispatcher().send(pushSession, push.getNotice());
+            NetContext.getRouter().send(pushSession, push.getNotice());
         }
     }
 
@@ -104,7 +104,7 @@ public class PushController {
     public void atKickMemberPushToGateway(Session session, KickMemberPushToGateway push) {
         for (var sid : push.getSidSet()) {
             var pushSession = NetContext.getSessionManager().getServerSession(sid);
-            NetContext.getDispatcher().send(pushSession, push.getNotice());
+            NetContext.getRouter().send(pushSession, push.getNotice());
         }
     }
 
@@ -112,7 +112,7 @@ public class PushController {
     public void atDeleteGroupMessagePushToGateway(Session session, DeleteGroupMessagePushToGateway push) {
         for (var sid : push.getSidSet()) {
             var pushSession = NetContext.getSessionManager().getServerSession(sid);
-            NetContext.getDispatcher().send(pushSession, push.getNotice());
+            NetContext.getRouter().send(pushSession, push.getNotice());
         }
     }
 
@@ -120,7 +120,7 @@ public class PushController {
     public void atEditGroupMessagePushToGateway(Session session, EditGroupMessagePushToGateway push) {
         for (var sid : push.getSidSet()) {
             var pushSession = NetContext.getSessionManager().getServerSession(sid);
-            NetContext.getDispatcher().send(pushSession, push.getNotice());
+            NetContext.getRouter().send(pushSession, push.getNotice());
         }
     }
 

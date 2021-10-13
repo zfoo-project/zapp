@@ -28,9 +28,9 @@ import com.zfoo.app.zapp.common.protocol.push.group.GroupUpdatePush;
 import com.zfoo.app.zapp.common.result.CodeEnum;
 import com.zfoo.app.zapp.common.util.CommonUtils;
 import com.zfoo.net.NetContext;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
 import com.zfoo.net.packet.common.Error;
 import com.zfoo.net.packet.model.GatewayPacketAttachment;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
 import com.zfoo.orm.model.cache.IEntityCaches;
@@ -63,34 +63,34 @@ public class SettingController {
         var avatar = cm.getAvatar();
 
         if (!CommonUtils.isGroupIdInRange(List.of(groupId))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         if (StringUtils.isBlank(avatar)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
             return;
         }
 
         if (!avatar.startsWith(OssPolicyEnum.GROUP_AVATAR.getUrl())) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_URL_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_URL_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         var groupEntity = groupEntityCaches.load(groupId);
         if (groupEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
         if (!groupEntity.memberOfMaxGroupAuth(userId).hasAuth(OperationEnum.CHANGE_GROUP_AVATAR)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         groupEntity.setAvatar(avatar);
         groupEntityCaches.update(groupEntity);
 
-        NetContext.getDispatcher().send(session, SaveGroupAvatarResponse.valueOf(groupId, avatar), gatewayAttachment);
+        NetContext.getRouter().send(session, SaveGroupAvatarResponse.valueOf(groupId, avatar), gatewayAttachment);
         NetContext.getConsumer().send(GroupUpdatePush.valueOf(groupEntity.getPeople(), GroupUpdateNotice.valueOf(groupEntity.toGroupVO())), groupId);
     }
 
@@ -101,34 +101,34 @@ public class SettingController {
         var background = cm.getBackground();
 
         if (!CommonUtils.isGroupIdInRange(List.of(groupId))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         if (StringUtils.isBlank(background)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
             return;
         }
 
         if (!background.startsWith(OssPolicyEnum.GROUP_BACKGROUND.getUrl())) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_URL_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_URL_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         var groupEntity = groupEntityCaches.load(groupId);
         if (groupEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
         if (!groupEntity.memberOfMaxGroupAuth(userId).hasAuth(OperationEnum.CHANGE_GROUP_BACKGROUND)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         groupEntity.setBackground(background);
         groupEntityCaches.update(groupEntity);
 
-        NetContext.getDispatcher().send(session, SaveGroupBackgroundResponse.valueOf(groupId, background), gatewayAttachment);
+        NetContext.getRouter().send(session, SaveGroupBackgroundResponse.valueOf(groupId, background), gatewayAttachment);
         NetContext.getConsumer().send(GroupUpdatePush.valueOf(groupEntity.getPeople(), GroupUpdateNotice.valueOf(groupEntity.toGroupVO())), groupId);
     }
 
@@ -139,27 +139,27 @@ public class SettingController {
         var groupName = cm.getName();
 
         if (!CommonUtils.isGroupIdInRange(List.of(groupId))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         if (StringUtils.isBlank(groupName)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
             return;
         }
 
         if (groupId == -userId) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NAME_SELF_CHANGE_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NAME_SELF_CHANGE_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         var groupEntity = groupEntityCaches.load(groupId);
         if (groupEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
         if (!groupEntity.memberOfMaxGroupAuth(userId).hasAuth(OperationEnum.CHANGE_GROUP_NAME)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
@@ -170,14 +170,14 @@ public class SettingController {
                     public void accept(WordFilterAnswer answer) {
                         // 敏感字符检测
                         if (CollectionUtils.isNotEmpty(answer.getFilterWords())) {
-                            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_WORD_FILTER_ERROR.getCode()), gatewayAttachment);
+                            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_WORD_FILTER_ERROR.getCode()), gatewayAttachment);
                             return;
                         }
 
                         groupEntity.setName(groupName);
                         groupEntityCaches.update(groupEntity);
 
-                        NetContext.getDispatcher().send(session, SaveGroupSettingResponse.valueOf(groupId, groupName), gatewayAttachment);
+                        NetContext.getRouter().send(session, SaveGroupSettingResponse.valueOf(groupId, groupName), gatewayAttachment);
                         NetContext.getConsumer().send(GroupUpdatePush.valueOf(groupEntity.getPeople(), GroupUpdateNotice.valueOf(groupEntity.toGroupVO())), groupId);
                     }
                 });
@@ -189,7 +189,7 @@ public class SettingController {
         var groupId = cm.getGroupId();
 
         if (!CommonUtils.isGroupIdInRange(List.of(groupId))) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
@@ -200,11 +200,11 @@ public class SettingController {
 
         var groupEntity = groupEntityCaches.load(groupId);
         if (groupEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
         if (!groupEntity.memberOfMaxGroupAuth(userId).hasAuth(OperationEnum.CHANGE_GROUP_NAME)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_AUTH_ERROR.getCode()), gatewayAttachment);
             return;
         }
 

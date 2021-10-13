@@ -21,9 +21,9 @@ import com.zfoo.app.zapp.common.result.CodeEnum;
 import com.zfoo.app.zapp.user.group.service.IGroupService;
 import com.zfoo.app.zapp.user.login.service.ILoginService;
 import com.zfoo.net.NetContext;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
 import com.zfoo.net.packet.common.Error;
 import com.zfoo.net.packet.common.Message;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.OrmContext;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
@@ -60,7 +60,7 @@ public class WeiboLoginController {
 
         var pair = loginService.weiBoSignIn(ask.getWeiBoUid());
 
-        NetContext.getDispatcher().send(session, WeiBoSignInAnswer.valueOf(pair.getKey(), pair.getValue()));
+        NetContext.getRouter().send(session, WeiBoSignInAnswer.valueOf(pair.getKey(), pair.getValue()));
     }
 
     @PacketReceiver
@@ -72,18 +72,18 @@ public class WeiboLoginController {
 
         var weiBoEntity = OrmContext.getAccessor().load(weiBoUid, WeiBoEntity.class);
         if (weiBoEntity != null) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.USER_BIND_WEIBO_ERROR.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.USER_BIND_WEIBO_ERROR.getCode()));
             return;
         }
 
         var weiBoList = OrmContext.getQuery().queryFieldEqual("uid", userId, WeiBoEntity.class);
         if (CollectionUtils.isNotEmpty(weiBoList)) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.USER_ALREADY_BIND_WEIBO_ERROR.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.USER_ALREADY_BIND_WEIBO_ERROR.getCode()));
             return;
         }
 
         OrmContext.getAccessor().insert(WeiBoEntity.valueOf(weiBoUid, userId));
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
     @PacketReceiver
@@ -94,12 +94,12 @@ public class WeiboLoginController {
 
         var weiBoList = OrmContext.getQuery().queryFieldEqual("uid", userId, WeiBoEntity.class);
         if (CollectionUtils.isEmpty(weiBoList)) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.USER_BIND_WEIBO_EMPTY_ERROR.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.USER_BIND_WEIBO_EMPTY_ERROR.getCode()));
             return;
         }
 
         OrmContext.getAccessor().delete(weiBoList.get(0));
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
 
@@ -112,7 +112,7 @@ public class WeiboLoginController {
 
         var userEntity = entityCaches.load(ask.getUid());
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
         userEntity.setName(name);
@@ -131,7 +131,7 @@ public class WeiboLoginController {
 
         entityCaches.update(userEntity);
 
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode(), CodeEnum.OK.getMessage()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode(), CodeEnum.OK.getMessage()));
     }
 
 }

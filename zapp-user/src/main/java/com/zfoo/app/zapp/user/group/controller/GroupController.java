@@ -24,10 +24,10 @@ import com.zfoo.app.zapp.common.protocol.user.group.*;
 import com.zfoo.app.zapp.common.result.CodeEnum;
 import com.zfoo.app.zapp.user.group.service.IGroupService;
 import com.zfoo.net.NetContext;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
 import com.zfoo.net.packet.common.Error;
 import com.zfoo.net.packet.common.Message;
 import com.zfoo.net.packet.model.GatewayPacketAttachment;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
 import com.zfoo.orm.model.cache.IEntityCaches;
@@ -70,7 +70,7 @@ public class GroupController {
                     public void accept(WordFilterAnswer answer) {
                         // 敏感字符检测
                         if (CollectionUtils.isNotEmpty(answer.getFilterWords())) {
-                            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_WORD_FILTER_ERROR.getCode()), gatewayAttachment);
+                            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_WORD_FILTER_ERROR.getCode()), gatewayAttachment);
                             return;
                         }
                         var groupId = MongoIdUtils.getIncrementIdFromMongoDefault(GroupEntity.class);
@@ -78,7 +78,7 @@ public class GroupController {
 
                         entityCaches.update(userEntity);
 
-                        NetContext.getDispatcher().send(session, CreateGroupResponse.valueOf(groupEntity.toGroupVO()), gatewayAttachment);
+                        NetContext.getRouter().send(session, CreateGroupResponse.valueOf(groupEntity.toGroupVO()), gatewayAttachment);
                     }
                 });
     }
@@ -96,7 +96,7 @@ public class GroupController {
         var groups = userEntity.getGroups();
         var groupTimeOptional = groups.stream().filter(it -> it.getGroupId() == groupId).findFirst();
         if (groupTimeOptional.isEmpty()) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_JOIN_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_JOIN_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
@@ -106,7 +106,7 @@ public class GroupController {
         var channels = groupTime.getChannelTimes();
 
         if (channels.size() > AppConstant.GROUP_CHANNEL_MAX_SIZE) {
-            NetContext.getDispatcher().send(session, RefreshChannelTimeResponse.valueOf(groupId, channelId, refreshTime), gatewayAttachment);
+            NetContext.getRouter().send(session, RefreshChannelTimeResponse.valueOf(groupId, channelId, refreshTime), gatewayAttachment);
             return;
         }
 
@@ -118,7 +118,7 @@ public class GroupController {
         }
 
         entityCaches.update(userEntity);
-        NetContext.getDispatcher().send(session, RefreshChannelTimeResponse.valueOf(groupId, channelId, refreshTime), gatewayAttachment);
+        NetContext.getRouter().send(session, RefreshChannelTimeResponse.valueOf(groupId, channelId, refreshTime), gatewayAttachment);
     }
 
     @PacketReceiver
@@ -132,7 +132,7 @@ public class GroupController {
         var groups = userEntity.getGroups();
         var groupTimeOptional = groups.stream().filter(it -> it.getGroupId() == groupId).findFirst();
         if (groupTimeOptional.isEmpty()) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_JOIN_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_JOIN_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
@@ -140,7 +140,7 @@ public class GroupController {
         groupTime.setMute(mute);
         entityCaches.update(userEntity);
 
-        NetContext.getDispatcher().send(session, MuteGroupResponse.valueOf(groupId, mute), gatewayAttachment);
+        NetContext.getRouter().send(session, MuteGroupResponse.valueOf(groupId, mute), gatewayAttachment);
     }
 
     @PacketReceiver
@@ -156,7 +156,7 @@ public class GroupController {
         var groups = userEntity.getGroups();
         var groupTimeOptional = groups.stream().filter(it -> it.getGroupId() == groupId).findFirst();
         if (groupTimeOptional.isEmpty()) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_JOIN_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_NOT_JOIN_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
@@ -166,7 +166,7 @@ public class GroupController {
         var channels = groupTime.getChannelTimes();
 
         if (channels.size() >= AppConstant.GROUP_CHANNEL_MAX_SIZE) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.GROUP_MAX_CHANNEL_LIMIT.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.GROUP_MAX_CHANNEL_LIMIT.getCode()), gatewayAttachment);
             return;
         }
 
@@ -183,7 +183,7 @@ public class GroupController {
         }
         entityCaches.update(userEntity);
 
-        NetContext.getDispatcher().send(session, MuteChannelResponse.valueOf(groupId, channelId, mute, refreshTime), gatewayAttachment);
+        NetContext.getRouter().send(session, MuteChannelResponse.valueOf(groupId, channelId, mute, refreshTime), gatewayAttachment);
     }
 
     @PacketReceiver
@@ -192,7 +192,7 @@ public class GroupController {
         var groupId = ask.getGroupId();
         var userEntity = entityCaches.load(userId);
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
 
@@ -203,7 +203,7 @@ public class GroupController {
             entityCaches.update(userEntity);
         }
 
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
     @PacketReceiver
@@ -212,13 +212,13 @@ public class GroupController {
         var groupId = ask.getGroupId();
         var userEntity = entityCaches.load(userId);
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
         userEntity.getGroups().removeIf(it -> it.getGroupId() == groupId);
         entityCaches.update(userEntity);
 
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
 }

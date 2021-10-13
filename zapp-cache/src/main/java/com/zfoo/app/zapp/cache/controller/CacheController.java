@@ -21,8 +21,8 @@ import com.zfoo.app.zapp.common.protocol.cache.refresh.RefreshUserTsCacheAsk;
 import com.zfoo.app.zapp.common.protocol.cache.refresh.RefreshWordCacheAsk;
 import com.zfoo.app.zapp.common.util.CommonUtils;
 import com.zfoo.net.NetContext;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
 import com.zfoo.net.packet.model.GatewayPacketAttachment;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.protocol.collection.CollectionUtils;
 import com.zfoo.protocol.util.StringUtils;
@@ -58,21 +58,21 @@ public class CacheController {
 
     @PacketReceiver
     public void atGetUserCacheRequest(Session session, GetUserCacheRequest request, GatewayPacketAttachment gatewayAttachment) {
-        NetContext.getDispatcher().send(session, GetUserCacheResponse.valueOf(getUserCaches(request.getUserIds())), gatewayAttachment);
+        NetContext.getRouter().send(session, GetUserCacheResponse.valueOf(getUserCaches(request.getUserIds())), gatewayAttachment);
     }
 
 
     @PacketReceiver
     public void atGetUserCacheAsk(Session session, GetUserCacheAsk ask) {
         var userIds = ask.getUserIds();
-        NetContext.getDispatcher().send(session, GetUserCacheAnswer.valueOf(getUserCaches(userIds)));
+        NetContext.getRouter().send(session, GetUserCacheAnswer.valueOf(getUserCaches(userIds)));
     }
 
     @PacketReceiver
     public void atGetUserLatestCacheAsk(Session session, GetUserLatestCacheAsk ask) {
         var userIds = ask.getUserIds();
         userIds.forEach(it -> cacheService.userCaches.invalidate(it));
-        NetContext.getDispatcher().send(session, GetUserLatestCacheAnswer.valueOf(getUserCaches(userIds)));
+        NetContext.getRouter().send(session, GetUserLatestCacheAnswer.valueOf(getUserCaches(userIds)));
     }
 
     @PacketReceiver
@@ -80,7 +80,7 @@ public class CacheController {
         var userIds = ask.getUserIds();
 
         if (CollectionUtils.isEmpty(userIds)) {
-            NetContext.getDispatcher().send(session, GetUserTsCacheAsk.valueOf(null));
+            NetContext.getRouter().send(session, GetUserTsCacheAsk.valueOf(null));
             return;
         }
         var userTsMap = cacheService.userTimeSliceCaches
@@ -89,7 +89,7 @@ public class CacheController {
                 .stream()
                 .filter(it -> it.getValue() != Collections.EMPTY_LIST)
                 .collect(Collectors.toMap(key -> key.getKey(), value -> value.getValue()));
-        NetContext.getDispatcher().send(session, GetUserTsCacheAnswer.valueOf(userTsMap));
+        NetContext.getRouter().send(session, GetUserTsCacheAnswer.valueOf(userTsMap));
     }
 
 
@@ -154,24 +154,24 @@ public class CacheController {
     public void atSearchUserRequest(Session session, SearchUserRequest request, GatewayPacketAttachment gatewayAttachment) {
         var query = request.getQuery();
         if (StringUtils.isBlank(query)) {
-            NetContext.getDispatcher().send(session, SearchUserResponse.valueOf(Collections.EMPTY_LIST), gatewayAttachment);
+            NetContext.getRouter().send(session, SearchUserResponse.valueOf(Collections.EMPTY_LIST), gatewayAttachment);
             return;
         }
 
         var userCaches = searchUser(query);
-        NetContext.getDispatcher().send(session, SearchUserResponse.valueOf(userCaches), gatewayAttachment);
+        NetContext.getRouter().send(session, SearchUserResponse.valueOf(userCaches), gatewayAttachment);
     }
 
     @PacketReceiver
     public void atSearchUserAsk(Session session, SearchUserAsk ask) {
         var query = ask.getQuery();
         if (StringUtils.isBlank(query)) {
-            NetContext.getDispatcher().send(session, SearchUserAnswer.valueOf(Collections.EMPTY_LIST));
+            NetContext.getRouter().send(session, SearchUserAnswer.valueOf(Collections.EMPTY_LIST));
             return;
         }
 
         var userCaches = searchUser(query);
-        NetContext.getDispatcher().send(session, SearchUserAnswer.valueOf(userCaches));
+        NetContext.getRouter().send(session, SearchUserAnswer.valueOf(userCaches));
     }
 
     @PacketReceiver
@@ -179,7 +179,7 @@ public class CacheController {
         var word = ask.getWord();
 
         if (StringUtils.isBlank(word)) {
-            NetContext.getDispatcher().send(session, WordFilterAnswer.valueOf(Collections.EMPTY_LIST));
+            NetContext.getRouter().send(session, WordFilterAnswer.valueOf(Collections.EMPTY_LIST));
             return;
         }
 
@@ -206,7 +206,7 @@ public class CacheController {
         result.addAll(wordTree.matchAll(word, -1, true, true));
 
         if (CollectionUtils.isNotEmpty(result)) {
-            NetContext.getDispatcher().send(session, WordFilterAnswer.valueOf(result));
+            NetContext.getRouter().send(session, WordFilterAnswer.valueOf(result));
             return;
         }
 
@@ -218,67 +218,67 @@ public class CacheController {
             result.addAll(wordTree.matchAll(enStr.toString(), -1, true, true));
         }
 
-        NetContext.getDispatcher().send(session, WordFilterAnswer.valueOf(result));
+        NetContext.getRouter().send(session, WordFilterAnswer.valueOf(result));
     }
 
     @PacketReceiver
     public void atGetLocationCacheAsk(Session session, GetLocationCacheAsk ask) {
         var locations = ask.getLocations();
         if (CollectionUtils.isEmpty(locations)) {
-            NetContext.getDispatcher().send(session, GetPersonCacheAnswer.valueOf(Collections.EMPTY_MAP));
+            NetContext.getRouter().send(session, GetPersonCacheAnswer.valueOf(Collections.EMPTY_MAP));
             return;
         }
 
         var locationMap = cacheService.locationCaches.batchGet(locations);
-        NetContext.getDispatcher().send(session, GetLocationCacheAnswer.valueOf(locationMap));
+        NetContext.getRouter().send(session, GetLocationCacheAnswer.valueOf(locationMap));
     }
 
     @PacketReceiver
     public void atGetPersonCacheAsk(Session session, GetPersonCacheAsk ask) {
         var persons = ask.getPersons();
         if (CollectionUtils.isEmpty(persons)) {
-            NetContext.getDispatcher().send(session, GetPersonCacheAnswer.valueOf(Collections.EMPTY_MAP));
+            NetContext.getRouter().send(session, GetPersonCacheAnswer.valueOf(Collections.EMPTY_MAP));
             return;
         }
 
         var itemMap = cacheService.personCaches.batchGet(persons);
-        NetContext.getDispatcher().send(session, GetPersonCacheAnswer.valueOf(itemMap));
+        NetContext.getRouter().send(session, GetPersonCacheAnswer.valueOf(itemMap));
     }
 
     @PacketReceiver
     public void atGetItemCacheAsk(Session session, GetItemCacheAsk ask) {
         var items = ask.getItems();
         if (CollectionUtils.isEmpty(items)) {
-            NetContext.getDispatcher().send(session, GetItemCacheAnswer.valueOf(Collections.EMPTY_MAP));
+            NetContext.getRouter().send(session, GetItemCacheAnswer.valueOf(Collections.EMPTY_MAP));
             return;
         }
 
         var itemMap = cacheService.itemCaches.batchGet(items);
-        NetContext.getDispatcher().send(session, GetItemCacheAnswer.valueOf(itemMap));
+        NetContext.getRouter().send(session, GetItemCacheAnswer.valueOf(itemMap));
     }
 
     @PacketReceiver
     public void atGetWordCacheAsk(Session session, GetWordCacheAsk ask) {
         var words = ask.getWords();
         if (CollectionUtils.isEmpty(words)) {
-            NetContext.getDispatcher().send(session, GetWordCacheAnswer.valueOf(Collections.EMPTY_MAP));
+            NetContext.getRouter().send(session, GetWordCacheAnswer.valueOf(Collections.EMPTY_MAP));
             return;
         }
 
         var wordMap = cacheService.wordCaches.batchGet(words);
-        NetContext.getDispatcher().send(session, GetWordCacheAnswer.valueOf(wordMap));
+        NetContext.getRouter().send(session, GetWordCacheAnswer.valueOf(wordMap));
     }
 
     @PacketReceiver
     public void atGetCategoryCacheAsk(Session session, GetCategoryCacheAsk ask) {
         var categories = ask.getCategories();
         if (CollectionUtils.isEmpty(categories)) {
-            NetContext.getDispatcher().send(session, GetCategoryCacheAnswer.valueOf(Collections.EMPTY_MAP));
+            NetContext.getRouter().send(session, GetCategoryCacheAnswer.valueOf(Collections.EMPTY_MAP));
             return;
         }
 
         var categoryMap = cacheService.categoryCaches.batchGet(categories);
-        NetContext.getDispatcher().send(session, GetCategoryCacheAnswer.valueOf(categoryMap));
+        NetContext.getRouter().send(session, GetCategoryCacheAnswer.valueOf(categoryMap));
     }
 
 }

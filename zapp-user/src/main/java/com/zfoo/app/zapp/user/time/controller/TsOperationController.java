@@ -21,8 +21,8 @@ import com.zfoo.app.zapp.common.protocol.user.time.UpdateTimeSliceAsk;
 import com.zfoo.app.zapp.common.result.CodeEnum;
 import com.zfoo.app.zapp.user.time.servece.ITsOperationService;
 import com.zfoo.net.NetContext;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
 import com.zfoo.net.packet.common.Message;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
 import com.zfoo.orm.model.cache.IEntityCaches;
@@ -62,7 +62,7 @@ public class TsOperationController {
 
         var entity = tsCaches.load(tsId);
         if (entity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
             return;
         }
         var type = ask.getType();
@@ -99,7 +99,7 @@ public class TsOperationController {
 
         entity.setAlbums(TimeLinkAlbumVO.vosToPos(albums));
         tsCaches.update(entity);
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
 }

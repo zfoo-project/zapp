@@ -19,9 +19,9 @@ import com.zfoo.app.zapp.common.protocol.user.fan.SubscribeLocationAsk;
 import com.zfoo.app.zapp.common.protocol.user.fan.SubscribePersonAsk;
 import com.zfoo.app.zapp.common.result.CodeEnum;
 import com.zfoo.net.NetContext;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
 import com.zfoo.net.packet.common.Error;
 import com.zfoo.net.packet.common.Message;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
 import com.zfoo.orm.model.cache.IEntityCaches;
@@ -46,7 +46,7 @@ public class SubscribeController {
     public void atSubscribeItemAsk(Session session, SubscribeItemAsk ask) {
         var userEntity = entityCaches.load(ask.getUserId());
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
         var itemId = ask.getItemId();
@@ -57,14 +57,14 @@ public class SubscribeController {
             items.add(itemId);
         }
         entityCaches.update(userEntity);
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
     @PacketReceiver
     public void atSubscribePersonAsk(Session session, SubscribePersonAsk ask) {
         var userEntity = entityCaches.load(ask.getUserId());
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
 
@@ -76,14 +76,14 @@ public class SubscribeController {
             persons.add(personId);
         }
         entityCaches.update(userEntity);
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
     @PacketReceiver
     public void atSubscribeLocationAsk(Session session, SubscribeLocationAsk ask) {
         var userEntity = entityCaches.load(ask.getUserId());
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
         var locationId = ask.getLocationId();
@@ -94,6 +94,6 @@ public class SubscribeController {
             locations.add(locationId);
         }
         entityCaches.update(userEntity);
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 }

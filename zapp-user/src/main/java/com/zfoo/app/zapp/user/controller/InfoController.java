@@ -21,9 +21,9 @@ import com.zfoo.app.zapp.common.result.CodeEnum;
 import com.zfoo.app.zapp.user.login.model.LoginEvent;
 import com.zfoo.event.manager.EventBus;
 import com.zfoo.net.NetContext;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
 import com.zfoo.net.packet.common.Error;
 import com.zfoo.net.packet.common.Message;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
 import com.zfoo.orm.model.cache.IEntityCaches;
@@ -49,73 +49,73 @@ public class InfoController {
     public void atUpdateBaseInfoAsk(Session session, UpdateBaseInfoAsk ask) {
         var userEntity = entityCaches.load(ask.getUserId());
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
         userEntity.setGender(ask.getGender());
         userEntity.setName(ask.getName());
         userEntity.setSignature(ask.getSignature());
         entityCaches.update(userEntity);
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
     @PacketReceiver
     public void atUpdateAvatarAsk(Session session, UpdateAvatarAsk ask) {
         var userEntity = entityCaches.load(ask.getUserId());
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
         userEntity.setAvatar(ask.getAvatar());
         entityCaches.update(userEntity);
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
     @PacketReceiver
     public void atUpdateBackgroundAsk(Session session, UpdateBackgroundAsk ask) {
         var userEntity = entityCaches.load(ask.getUserId());
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
         userEntity.setBackground(ask.getBackground());
         entityCaches.update(userEntity);
 
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
     @PacketReceiver
     public void atUpdateCustomStatusAsk(Session session, UpdateCustomStatusAsk ask) {
         var userEntity = entityCaches.load(ask.getUserId());
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
         userEntity.setCustomTime(ask.getCustomTime());
         userEntity.setCustom(ask.getCustom());
         entityCaches.update(userEntity);
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
     @PacketReceiver
     public void atUpdateSettingAsk(Session session, UpdateSettingAsk ask) {
         var userEntity = entityCaches.load(ask.getUserId());
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
         var settingPO = userEntity.getSetting();
         settingPO.setLanguage(ask.getLanguage());
         settingPO.setTheme(ask.getTheme());
         entityCaches.update(userEntity);
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
     @PacketReceiver
     public void atLoveStatisticsAsk(Session session, LoveStatisticsAsk ask) {
         var userEntity = entityCaches.load(ask.getUserId());
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
         var license = LicenseEnum.getLicenseEnumByType(ask.getType());
@@ -147,7 +147,7 @@ public class InfoController {
         var userId = ask.getUserId();
         var entity = entityCaches.load(userId);
         if (entity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
 
@@ -160,7 +160,7 @@ public class InfoController {
                 , entity.getFollows(), entity.getStars()
                 , entity.getLocations(), entity.getPersons(), entity.getItems(), entity.getSetting().toSettingVO());
 
-        NetContext.getDispatcher().send(session, answer);
+        NetContext.getRouter().send(session, answer);
     }
 
 }

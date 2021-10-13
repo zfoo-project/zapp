@@ -20,8 +20,8 @@ import com.zfoo.app.zapp.common.result.CodeEnum;
 import com.zfoo.app.zapp.common.util.CommonUtils;
 import com.zfoo.app.zapp.user.friend.service.IFriendService;
 import com.zfoo.net.NetContext;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
 import com.zfoo.net.packet.common.Message;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
 import com.zfoo.orm.model.cache.IEntityCaches;
@@ -54,11 +54,11 @@ public class FriendController {
 
         var userEntity = entityCaches.load(userId);
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
 
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
     @PacketReceiver
@@ -67,26 +67,26 @@ public class FriendController {
         var friendId = ask.getFriendId();
 
         if (!CommonUtils.isUserIdInRange(List.of(userId, friendId)) || friendId == userId) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.PARAMETER_ERROR.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.PARAMETER_ERROR.getCode()));
             return;
         }
 
         var userEntity = entityCaches.load(userId);
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
 
         var friends = userEntity.getFriends();
         if (friends.size() >= AppConstant.FRIEND_LIMIT) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.FRIEND_LIMIT.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.FRIEND_LIMIT.getCode()));
             return;
         }
         if (!friends.contains(friendId)) {
             friends.add(friendId);
             entityCaches.update(userEntity);
         }
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
     @PacketReceiver
@@ -95,20 +95,20 @@ public class FriendController {
         var friendId = ask.getFriendId();
 
         if (!CommonUtils.isUserIdInRange(List.of(friendId)) || friendId == userId) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.PARAMETER_ERROR.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.PARAMETER_ERROR.getCode()));
             return;
         }
 
         var userEntity = entityCaches.load(userId);
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
 
         var friends = userEntity.getFriends();
         friends.removeIf(it -> it == friendId);
         entityCaches.update(userEntity);
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
     @PacketReceiver
@@ -117,30 +117,30 @@ public class FriendController {
         var targetId = ask.getTargetId();
 
         if (!CommonUtils.isUserIdInRange(List.of(targetId)) || targetId == userId) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.PARAMETER_ERROR.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.PARAMETER_ERROR.getCode()));
             return;
         }
 
         var userEntity = entityCaches.load(userId);
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
 
         var blacklist = userEntity.getBlacklist();
 
         if (blacklist.size() >= AppConstant.BLACKLIST_LIMIT) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.BLACKLIST_LIMIT.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.BLACKLIST_LIMIT.getCode()));
             return;
         }
 
         if (blacklist.contains(targetId)) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.BLACKLIST_LIMIT.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.BLACKLIST_LIMIT.getCode()));
             return;
         }
         blacklist.add(targetId);
         entityCaches.update(userEntity);
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
     @PacketReceiver
@@ -149,20 +149,20 @@ public class FriendController {
         var targetId = ask.getTargetId();
 
         if (!CommonUtils.isUserIdInRange(List.of(targetId)) || targetId == userId) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.PARAMETER_ERROR.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.PARAMETER_ERROR.getCode()));
             return;
         }
 
         var userEntity = entityCaches.load(userId);
         if (userEntity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
 
         var blacklist = userEntity.getBlacklist();
         blacklist.removeIf(it -> it == targetId);
         entityCaches.update(userEntity);
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
 }

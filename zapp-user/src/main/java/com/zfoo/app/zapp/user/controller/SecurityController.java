@@ -17,9 +17,9 @@ import com.zfoo.app.zapp.common.entity.user.*;
 import com.zfoo.app.zapp.common.protocol.user.info.*;
 import com.zfoo.app.zapp.common.result.CodeEnum;
 import com.zfoo.net.NetContext;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
 import com.zfoo.net.packet.common.Error;
 import com.zfoo.net.packet.common.Message;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.OrmContext;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
@@ -74,7 +74,7 @@ public class SecurityController {
             passwordSet = true;
         }
 
-        NetContext.getDispatcher().send(session, AccountSecurityAnswer.valueOf(phoneNumber, weiChatBind, weiBoBind, passwordSet));
+        NetContext.getRouter().send(session, AccountSecurityAnswer.valueOf(phoneNumber, weiChatBind, weiBoBind, passwordSet));
     }
 
     @PacketReceiver
@@ -91,7 +91,7 @@ public class SecurityController {
             OrmContext.getAccessor().update(accountEntity);
         }
 
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK_QUIETLY.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK_QUIETLY.getCode()));
     }
 
     @PacketReceiver
@@ -101,7 +101,7 @@ public class SecurityController {
 
         // 先查看手机号有没有绑定到别的账号
         if (OrmContext.getAccessor().load(phoneNumber, PhoneEntity.class) != null) {
-            NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.USER_BIND_PHONE_ERROR.getCode()));
+            NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.USER_BIND_PHONE_ERROR.getCode()));
             return;
         }
 
@@ -111,7 +111,7 @@ public class SecurityController {
 
         OrmContext.getAccessor().insert(PhoneEntity.valueOf(phoneNumber, userId));
 
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK_QUIETLY.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK_QUIETLY.getCode()));
     }
 
     @PacketReceiver
@@ -121,12 +121,12 @@ public class SecurityController {
 
         var entity = entityCaches.load(userId);
         if (entity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
         entity.setAdminAuth(adminAuth);
         entityCaches.update(entity);
-        NetContext.getDispatcher().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
+        NetContext.getRouter().send(session, Message.valueOf(ask, CodeEnum.OK.getCode()));
     }
 
     @PacketReceiver
@@ -134,10 +134,10 @@ public class SecurityController {
         var userId = ask.getUserId();
         var entity = entityCaches.load(userId);
         if (entity.id() == 0L) {
-            NetContext.getDispatcher().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
+            NetContext.getRouter().send(session, Error.valueOf(ask, CodeEnum.USER_NOT_EXIST.getCode()));
             return;
         }
 
-        NetContext.getDispatcher().send(session, GetUserAdminAuthAnswer.valueOf(userId, entity.getAdminAuth()));
+        NetContext.getRouter().send(session, GetUserAdminAuthAnswer.valueOf(userId, entity.getAdminAuth()));
     }
 }

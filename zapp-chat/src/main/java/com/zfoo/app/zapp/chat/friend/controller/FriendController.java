@@ -31,10 +31,10 @@ import com.zfoo.app.zapp.common.protocol.user.friend.*;
 import com.zfoo.app.zapp.common.result.CodeEnum;
 import com.zfoo.app.zapp.common.util.CommonUtils;
 import com.zfoo.net.NetContext;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
 import com.zfoo.net.packet.common.Error;
 import com.zfoo.net.packet.common.Message;
 import com.zfoo.net.packet.model.GatewayPacketAttachment;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.net.task.TaskBus;
 import com.zfoo.orm.OrmContext;
@@ -77,25 +77,25 @@ public class FriendController {
         var friendId = cm.getFriendId();
 
         if (userId != cm.getUserId()) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         if (!CommonUtils.isUserIdInRange(List.of(friendId)) || friendId == userId) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.USER_NOT_EXIST.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.USER_NOT_EXIST.getCode()), gatewayAttachment);
             return;
         }
 
         var id = IdUtils.generateStringId(userId, friendId);
 
         if (friendService.connected(userId, friendId)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.FRIEND_ALREADY_ADDED.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.FRIEND_ALREADY_ADDED.getCode()), gatewayAttachment);
             return;
         }
 
         // 如果是黑名单中的好友，则忽略直接返回
         if (friendService.blacklisted(userId, friendId)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.FRIEND_REJECT_MESSAGE.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.FRIEND_REJECT_MESSAGE.getCode()), gatewayAttachment);
             return;
         }
 
@@ -104,7 +104,7 @@ public class FriendController {
                 .whenComplete(message -> {
                     if (!message.success()) {
                         // 返回失败信息给user
-                        NetContext.getDispatcher().send(session, Error.valueOf(cm, message.getCode()), gatewayAttachment);
+                        NetContext.getRouter().send(session, Error.valueOf(cm, message.getCode()), gatewayAttachment);
                         return;
                     }
 
@@ -114,13 +114,13 @@ public class FriendController {
                                 var applicantEntity = applicantEntityCaches.load(id);
                                 // 以经申请过，则不用重新申请，直接返回
                                 if (applicantEntity.getUserId() == userId && applicantEntity.getTargetId() == friendId && applicantEntity.getStatus() == 0) {
-                                    NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.FRIEND_ALREADY_APPLY.getCode()), gatewayAttachment);
+                                    NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.FRIEND_ALREADY_APPLY.getCode()), gatewayAttachment);
                                     return;
                                 }
 
                                 var userCacheMap = answer.getUserCacheMap();
                                 if (CollectionUtils.isEmpty(userCacheMap)) {
-                                    NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.USER_NOT_EXIST.getCode()), gatewayAttachment);
+                                    NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.USER_NOT_EXIST.getCode()), gatewayAttachment);
                                     return;
                                 }
 
@@ -142,7 +142,7 @@ public class FriendController {
 
                                 NetContext.getConsumer().send(ApplyFriendPush.valueOf(friendId, NewApplyFriendNotice.valueOf(applyFriendVO)), IdUtils.generateStringId(userId, friendId));
 
-                                NetContext.getDispatcher().send(session, Message.valueOf(cm, CodeEnum.OK.getCode()), gatewayAttachment);
+                                NetContext.getRouter().send(session, Message.valueOf(cm, CodeEnum.OK.getCode()), gatewayAttachment);
                             });
                 });
     }
@@ -154,24 +154,24 @@ public class FriendController {
         var friendId = cm.getFriendId();
 
         if (userId != cm.getUserId()) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         if (!CommonUtils.isUserIdInRange(List.of(friendId)) || friendId == userId) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
             return;
         }
 
         if (friendService.connected(userId, friendId)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.FRIEND_ALREADY_ADDED.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.FRIEND_ALREADY_ADDED.getCode()), gatewayAttachment);
             return;
         }
 
         var id = IdUtils.generateStringId(userId, friendId);
         var applicantEntity = applicantEntityCaches.load(id);
         if (StringUtils.isBlank(applicantEntity.id())) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR_ONE.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR_ONE.getCode()), gatewayAttachment);
             return;
         }
 
@@ -181,7 +181,7 @@ public class FriendController {
                 .whenComplete(messageA -> {
                     if (!messageA.success()) {
                         // 返回失败信息给user
-                        NetContext.getDispatcher().send(session, Error.valueOf(cm, messageA.getCode()), gatewayAttachment);
+                        NetContext.getRouter().send(session, Error.valueOf(cm, messageA.getCode()), gatewayAttachment);
                         return;
                     }
 
@@ -190,7 +190,7 @@ public class FriendController {
                             .whenComplete(messageB -> {
                                 if (!messageB.success()) {
                                     // 返回失败信息给user
-                                    NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.FAIL.getCode()), gatewayAttachment);
+                                    NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.FAIL.getCode()), gatewayAttachment);
                                     return;
                                 }
 
@@ -216,7 +216,7 @@ public class FriendController {
                                         friendEntityCaches.update(friendEntity);
 
                                         // 返回成功信息给user
-                                        NetContext.getDispatcher().send(session, Message.valueOf(cm, CodeEnum.OK.getCode()), gatewayAttachment);
+                                        NetContext.getRouter().send(session, Message.valueOf(cm, CodeEnum.OK.getCode()), gatewayAttachment);
 
                                         NetContext.getConsumer()
                                                 .asyncAsk(GetUserCacheAsk.valueOf(Set.of(userId, friendId)), GetUserCacheAnswer.class, cm.loadBalancerConsistentHashObject())
@@ -241,25 +241,25 @@ public class FriendController {
         var friendId = cm.getFriendId();
 
         if (userId != cm.getUserId()) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         if (!CommonUtils.isUserIdInRange(List.of(friendId)) || friendId == userId) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
             return;
         }
         var id = IdUtils.generateStringId(userId, friendId);
         var friendApplyEntity = applicantEntityCaches.load(id);
         if (StringUtils.isBlank(friendApplyEntity.id())) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR_ONE.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR_ONE.getCode()), gatewayAttachment);
             return;
         }
 
         applicantEntityCaches.invalidate(id);
         OrmContext.getAccessor().delete(friendApplyEntity);
 
-        NetContext.getDispatcher().send(session, RejectFriendResponse.valueOf(friendId), gatewayAttachment);
+        NetContext.getRouter().send(session, RejectFriendResponse.valueOf(friendId), gatewayAttachment);
     }
 
 
@@ -269,19 +269,19 @@ public class FriendController {
         var friendId = cm.getFriendId();
 
         if (userId != cm.getUserId()) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         if (!CommonUtils.isUserIdInRange(List.of(friendId)) || friendId == userId) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
             return;
         }
 
         var id = IdUtils.generateStringId(userId, friendId);
         var friendEntity = friendEntityCaches.load(id);
         if (StringUtils.isBlank(friendEntity.getId())) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR_ONE.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR_ONE.getCode()), gatewayAttachment);
             return;
         }
         friendEntity.setConnected(false);
@@ -292,11 +292,11 @@ public class FriendController {
                 .whenComplete(message -> {
                     if (!message.success()) {
                         // 返回失败信息给user
-                        NetContext.getDispatcher().send(session, Error.valueOf(cm, message.getCode(), message.getMessage()), gatewayAttachment);
+                        NetContext.getRouter().send(session, Error.valueOf(cm, message.getCode(), message.getMessage()), gatewayAttachment);
                         return;
                     }
 
-                    NetContext.getDispatcher().send(session, DeleteFriendResponse.valueOf(friendId), gatewayAttachment);
+                    NetContext.getRouter().send(session, DeleteFriendResponse.valueOf(friendId), gatewayAttachment);
                 });
     }
 
@@ -306,12 +306,12 @@ public class FriendController {
         var targetId = cm.getTargetId();
 
         if (userId != cm.getUserId()) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         if (!CommonUtils.isUserIdInRange(List.of(targetId)) || targetId == userId) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
             return;
         }
 
@@ -333,7 +333,7 @@ public class FriendController {
                 .asyncAsk(BlacklistAsk.valueOf(userId, targetId), Message.class, userId)
                 .whenComplete(message -> {
                     if (!message.success()) {
-                        NetContext.getDispatcher().send(session, Error.valueOf(cm, message.getCode(), message.getMessage()), gatewayAttachment);
+                        NetContext.getRouter().send(session, Error.valueOf(cm, message.getCode(), message.getMessage()), gatewayAttachment);
                         return;
                     }
 
@@ -341,7 +341,7 @@ public class FriendController {
                             .asyncAsk(GetUserCacheAsk.valueOf(Set.of(targetId)), GetUserCacheAnswer.class, targetId)
                             .whenComplete(answer -> {
                                 var userCacheMap = answer.getUserCacheMap();
-                                NetContext.getDispatcher().send(session, BlacklistResponse.valueOf(userCacheMap.get(targetId)), gatewayAttachment);
+                                NetContext.getRouter().send(session, BlacklistResponse.valueOf(userCacheMap.get(targetId)), gatewayAttachment);
                             });
                 });
     }
@@ -352,12 +352,12 @@ public class FriendController {
         var targetId = cm.getTargetId();
 
         if (userId != cm.getUserId()) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         if (!CommonUtils.isUserIdInRange(List.of(targetId)) || targetId == userId) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
             return;
         }
 
@@ -365,7 +365,7 @@ public class FriendController {
         var friendEntity = friendEntityCaches.load(id);
 
         if (StringUtils.isBlank(friendEntity.getId())) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR_ONE.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR_ONE.getCode()), gatewayAttachment);
             return;
         }
 
@@ -376,11 +376,11 @@ public class FriendController {
                 .asyncAsk(BlacklistCancelAsk.valueOf(userId, targetId), Message.class, userId)
                 .whenComplete(message -> {
                     if (!message.success()) {
-                        NetContext.getDispatcher().send(session, Error.valueOf(cm, message.getCode(), message.getMessage()), gatewayAttachment);
+                        NetContext.getRouter().send(session, Error.valueOf(cm, message.getCode(), message.getMessage()), gatewayAttachment);
                         return;
                     }
 
-                    NetContext.getDispatcher().send(session, BlacklistCancelResponse.valueOf(targetId), gatewayAttachment);
+                    NetContext.getRouter().send(session, BlacklistCancelResponse.valueOf(targetId), gatewayAttachment);
                 });
     }
 
@@ -391,35 +391,35 @@ public class FriendController {
         var tag = cm.getTag();
 
         if (userId != cm.getUserId()) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR.getCode()), gatewayAttachment);
             return;
         }
 
         if (!CommonUtils.isUserIdInRange(List.of(friendId)) || friendId == userId) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY.getCode()), gatewayAttachment);
             return;
         }
 
         if (StringUtils.isBlank(tag)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY_ONE.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_EMPTY_ONE.getCode()), gatewayAttachment);
             return;
         }
 
         if (!friendService.connected(userId, friendId)) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.FRIEND_NOT_ADDED.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.FRIEND_NOT_ADDED.getCode()), gatewayAttachment);
             return;
         }
 
         var id = IdUtils.generateStringId(userId, friendId);
         var friendEntity = friendEntityCaches.load(id);
         if (StringUtils.isBlank(friendEntity.id())) {
-            NetContext.getDispatcher().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR_ONE.getCode()), gatewayAttachment);
+            NetContext.getRouter().send(session, Error.valueOf(cm, CodeEnum.PARAMETER_ERROR_ONE.getCode()), gatewayAttachment);
             return;
         }
         friendEntity.markTag(userId, tag);
         friendEntityCaches.update(friendEntity);
 
-        NetContext.getDispatcher().send(session, MarkFriendResponse.valueOf(friendId, tag), gatewayAttachment);
+        NetContext.getRouter().send(session, MarkFriendResponse.valueOf(friendId, tag), gatewayAttachment);
     }
 
 }

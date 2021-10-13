@@ -15,7 +15,7 @@ package com.zfoo.app.zapp.feed.controller;
 
 import com.zfoo.app.zapp.common.entity.search.SearchEntity;
 import com.zfoo.app.zapp.common.protocol.feed.search.SearchCountAsk;
-import com.zfoo.net.dispatcher.model.anno.PacketReceiver;
+import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.OrmContext;
 import com.zfoo.orm.model.anno.EntityCachesInjection;

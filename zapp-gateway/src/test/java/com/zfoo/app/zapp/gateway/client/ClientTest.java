@@ -60,20 +60,20 @@ public class ClientTest {
         // 登录
         var signIn = new WebsocketSignInRequest();
         signIn.setToken("1");
-        NetContext.getDispatcher().send(session, signIn);
+        NetContext.getRouter().send(session, signIn);
         ThreadUtils.sleep(15_000);
 
         // 同意好友申申请
         var acceptFriend = new AcceptFriendRequest();
         acceptFriend.setFriendId(friendId);
-        NetContext.getDispatcher().send(session, acceptFriend);
+        NetContext.getRouter().send(session, acceptFriend);
         ThreadUtils.sleep(3000);
 
         // 好友聊天
         var chatRequest = new FriendChatRequest();
         chatRequest.setFriendId(friendId);
         chatRequest.setChatMessage("hello world");
-        NetContext.getDispatcher().send(session, chatRequest);
+        NetContext.getRouter().send(session, chatRequest);
         ThreadUtils.sleep(3000);
 
         // 删除好友
@@ -83,7 +83,7 @@ public class ClientTest {
 //        ThreadUtils.sleep(3000);
 
         // 好友聊天
-        NetContext.getDispatcher().send(session, chatRequest);
+        NetContext.getRouter().send(session, chatRequest);
         ThreadUtils.sleep(3000);
 
         ThreadUtils.sleep(Long.MAX_VALUE);
@@ -98,12 +98,12 @@ public class ClientTest {
         // 登录
         var signIn = new WebsocketSignInRequest();
         signIn.setToken("2");
-        NetContext.getDispatcher().send(session, signIn);
+        NetContext.getRouter().send(session, signIn);
         ThreadUtils.sleep(3000);
 
         // 加A为好友
         var applyFriend = new ApplyFriendRequest();
-        NetContext.getDispatcher().send(session, applyFriend);
+        NetContext.getRouter().send(session, applyFriend);
         ThreadUtils.sleep(3000);
 
 
