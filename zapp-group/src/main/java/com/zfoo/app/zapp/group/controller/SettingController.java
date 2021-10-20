@@ -29,7 +29,7 @@ import com.zfoo.app.zapp.common.result.CodeEnum;
 import com.zfoo.app.zapp.common.util.CommonUtils;
 import com.zfoo.net.NetContext;
 import com.zfoo.net.packet.common.Error;
-import com.zfoo.net.packet.model.GatewayPacketAttachment;
+import com.zfoo.net.router.attachment.GatewayAttachment;
 import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
@@ -57,7 +57,7 @@ public class SettingController {
     private IEntityCaches<Long, ChannelEntity> channelEntityCaches;
 
     @PacketReceiver
-    public void atSaveGroupAvatarRequest(Session session, SaveGroupAvatarRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atSaveGroupAvatarRequest(Session session, SaveGroupAvatarRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var avatar = cm.getAvatar();
@@ -95,7 +95,7 @@ public class SettingController {
     }
 
     @PacketReceiver
-    public void atSaveGroupBackgroundRequest(Session session, SaveGroupBackgroundRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atSaveGroupBackgroundRequest(Session session, SaveGroupBackgroundRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var background = cm.getBackground();
@@ -133,7 +133,7 @@ public class SettingController {
     }
 
     @PacketReceiver
-    public void atSaveGroupSettingRequest(Session session, SaveGroupSettingRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atSaveGroupSettingRequest(Session session, SaveGroupSettingRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var groupName = cm.getName();
@@ -184,7 +184,7 @@ public class SettingController {
     }
 
     @PacketReceiver
-    public void atRefreshGroupNameRequest(Session session, RefreshGroupNameRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atRefreshGroupNameRequest(Session session, RefreshGroupNameRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
 

@@ -33,7 +33,7 @@ import com.zfoo.app.zapp.user.login.service.ILoginService;
 import com.zfoo.net.NetContext;
 import com.zfoo.net.core.gateway.model.AuthUidToGatewayCheck;
 import com.zfoo.net.core.gateway.model.AuthUidToGatewayConfirm;
-import com.zfoo.net.packet.model.GatewayPacketAttachment;
+import com.zfoo.net.router.attachment.GatewayAttachment;
 import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.OrmContext;
@@ -71,7 +71,7 @@ public class LoginController {
     private IEntityCaches<Long, UserEntity> entityCaches;
 
     @PacketReceiver
-    public void atWebsocketSignInRequest(Session session, WebsocketSignInRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atWebsocketSignInRequest(Session session, WebsocketSignInRequest cm, GatewayAttachment gatewayAttachment) {
         logger.info("用户登录请求[{}]", JsonUtils.object2String(cm));
 
         var userId = TokenUtils.get(cm.getToken()).getLeft();
@@ -81,7 +81,7 @@ public class LoginController {
     }
 
     @PacketReceiver
-    public void atAuthUidToGatewayConfirm(Session session, AuthUidToGatewayConfirm confirm, GatewayPacketAttachment gatewayAttachment) {
+    public void atAuthUidToGatewayConfirm(Session session, AuthUidToGatewayConfirm confirm, GatewayAttachment gatewayAttachment) {
         var userId = confirm.getUid();
         var applyFriends = new ArrayList<ApplyFriendVO>();
         var applyCollection = OrmContext.getOrmManager().getCollection(ApplicantEntity.class);
@@ -121,7 +121,7 @@ public class LoginController {
                     OrmContext.getOrmManager().getCollection(FriendEntity.class)
                             .find(Filters.in("_id", ids))
                             .projection(Projections.exclude("inc", "messages"))
-                            .forEach((Consumer<FriendEntity>) friendEntity -> {
+                            .forEach(friendEntity -> {
                                 var friendInfo = FriendInfoVO.valueOf(friendEntity.friendId(userId), friendEntity.getRefreshTime(), friendEntity.readTimeOfUserId(userId), friendEntity.tag(userId));
                                 friendInfoMap.put(friendEntity.friendId(userId), friendInfo);
                             });
@@ -139,7 +139,7 @@ public class LoginController {
                     OrmContext.getOrmManager().getCollection(GroupEntity.class)
                             .find(Filters.in("_id", groupIds))
                             .projection(Projections.exclude("people"))
-                            .forEach((Consumer<GroupEntity>) groupEntity -> groupList.add(groupEntity));
+                            .forEach(groupEntity -> groupList.add(groupEntity));
 
                     // 检查群组，并且删除不存在的群组，因为群组可能会被删除
                     var currentGroups = new HashSet<>(userEntity.getGroups().stream().map(it -> it.getGroupId()).collect(Collectors.toSet()));

@@ -31,7 +31,7 @@ import com.zfoo.app.zapp.common.util.CommonUtils;
 import com.zfoo.net.NetContext;
 import com.zfoo.net.packet.common.Error;
 import com.zfoo.net.packet.common.Message;
-import com.zfoo.net.packet.model.GatewayPacketAttachment;
+import com.zfoo.net.router.attachment.GatewayAttachment;
 import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.OrmContext;
@@ -62,7 +62,7 @@ public class AuthController {
     private IEntityCaches<Long, ChannelEntity> channelEntityCaches;
 
     @PacketReceiver
-    public void atCreateGroupAuthRequest(Session session, CreateGroupAuthRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atCreateGroupAuthRequest(Session session, CreateGroupAuthRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var name = cm.getName();
@@ -112,7 +112,7 @@ public class AuthController {
     }
 
     @PacketReceiver
-    public void atDeleteGroupAuthRequest(Session session, DeleteGroupAuthRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atDeleteGroupAuthRequest(Session session, DeleteGroupAuthRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var groupAuthId = cm.getGroupAuthId();
@@ -150,7 +150,7 @@ public class AuthController {
     }
 
     @PacketReceiver
-    public void atSaveGroupAuthRequest(Session session, SaveGroupAuthRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atSaveGroupAuthRequest(Session session, SaveGroupAuthRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var groupAuthVOs = cm.getGroupAuths();
@@ -242,7 +242,7 @@ public class AuthController {
 
 
     @PacketReceiver
-    public void atSaveChannelAuthRequest(Session session, SaveChannelAuthRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atSaveChannelAuthRequest(Session session, SaveChannelAuthRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var channelId = cm.getChannelId();
@@ -296,7 +296,7 @@ public class AuthController {
     }
 
     @PacketReceiver
-    public void atAddMemberToGroupAuthRequest(Session session, AddMemberToGroupAuthRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atAddMemberToGroupAuthRequest(Session session, AddMemberToGroupAuthRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var groupAuthId = cm.getGroupAuthId();
@@ -349,7 +349,7 @@ public class AuthController {
     }
 
     @PacketReceiver
-    public void atRemoveMemberFromGroupAuthRequest(Session session, RemoveMemberFromGroupAuthRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atRemoveMemberFromGroupAuthRequest(Session session, RemoveMemberFromGroupAuthRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var groupAuthId = cm.getGroupAuthId();
@@ -401,7 +401,7 @@ public class AuthController {
     }
 
     @PacketReceiver
-    public void atDeleteGroupRequest(Session session, DeleteGroupRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atDeleteGroupRequest(Session session, DeleteGroupRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
 
@@ -442,7 +442,7 @@ public class AuthController {
     }
 
     @PacketReceiver
-    public void atChangeGroupAdminRequest(Session session, ChangeGroupAdminRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atChangeGroupAdminRequest(Session session, ChangeGroupAdminRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var adminId = cm.getAdminId();

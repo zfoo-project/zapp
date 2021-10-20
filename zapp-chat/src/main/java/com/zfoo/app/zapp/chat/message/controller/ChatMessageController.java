@@ -29,7 +29,7 @@ import com.zfoo.app.zapp.common.util.CommonUtils;
 import com.zfoo.net.NetContext;
 import com.zfoo.net.packet.common.Error;
 import com.zfoo.net.packet.common.Message;
-import com.zfoo.net.packet.model.GatewayPacketAttachment;
+import com.zfoo.net.router.attachment.GatewayAttachment;
 import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
@@ -62,7 +62,7 @@ public class ChatMessageController {
     private IFriendService friendService;
 
     @PacketReceiver
-    public void atFriendChatRequest(Session session, FriendChatRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atFriendChatRequest(Session session, FriendChatRequest cm, GatewayAttachment gatewayAttachment) {
         var type = MessageEnum.getMessageEnumByType(cm.getType());
         var userId = gatewayAttachment.getUid();
         var friendId = cm.getFriendId();
@@ -116,7 +116,7 @@ public class ChatMessageController {
     }
 
     @PacketReceiver
-    public void atDeleteFriendMessageRequest(Session session, DeleteFriendMessageRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atDeleteFriendMessageRequest(Session session, DeleteFriendMessageRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var friendId = cm.getFriendId();
         var messageId = cm.getMessageId();
@@ -153,7 +153,7 @@ public class ChatMessageController {
     }
 
     @PacketReceiver
-    public void atEditFriendMessageRequest(Session session, EditFriendMessageRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atEditFriendMessageRequest(Session session, EditFriendMessageRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var friendId = cm.getFriendId();
         var messageId = cm.getMessageId();
@@ -211,7 +211,7 @@ public class ChatMessageController {
     }
 
     @PacketReceiver
-    public void atReadFriendMessageRequest(Session session, ReadFriendMessageRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atReadFriendMessageRequest(Session session, ReadFriendMessageRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var friendId = cm.getFriendId();
 
@@ -246,7 +246,7 @@ public class ChatMessageController {
     }
 
     @PacketReceiver
-    public void atFriendHistoryMessageRequest(Session session, FriendHistoryMessageRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atFriendHistoryMessageRequest(Session session, FriendHistoryMessageRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var friendId = cm.getFriendId();
         var lastMessageId = cm.getLastMessageId();

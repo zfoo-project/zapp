@@ -33,7 +33,7 @@ import com.zfoo.app.zapp.group.service.IGroupService;
 import com.zfoo.net.NetContext;
 import com.zfoo.net.packet.common.Error;
 import com.zfoo.net.packet.common.Message;
-import com.zfoo.net.packet.model.GatewayPacketAttachment;
+import com.zfoo.net.router.attachment.GatewayAttachment;
 import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
@@ -66,7 +66,7 @@ public class ChatController {
     private IGroupService groupService;
 
     @PacketReceiver
-    public void atGroupChatRequest(Session session, GroupChatRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atGroupChatRequest(Session session, GroupChatRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var channelId = cm.getChannelId();
@@ -140,7 +140,7 @@ public class ChatController {
 
 
     @PacketReceiver
-    public void atDeleteGroupMessageRequest(Session session, DeleteGroupMessageRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atDeleteGroupMessageRequest(Session session, DeleteGroupMessageRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var channelId = cm.getChannelId();
@@ -184,7 +184,7 @@ public class ChatController {
     }
 
     @PacketReceiver
-    public void atEditGroupMessageRequest(Session session, EditGroupMessageRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atEditGroupMessageRequest(Session session, EditGroupMessageRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var channelId = cm.getChannelId();
@@ -251,7 +251,7 @@ public class ChatController {
     }
 
     @PacketReceiver
-    public void atGroupHistoryMessageRequest(Session session, GroupHistoryMessageRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atGroupHistoryMessageRequest(Session session, GroupHistoryMessageRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var channelId = cm.getChannelId();
@@ -273,7 +273,7 @@ public class ChatController {
             return;
         }
         // 如果是官方群历史记录则立刻返回，并且将该成员添加到官方群聊中
-        if (groupId == AppConstant.ZFOO_GROUP_ID && !groupEntity.getPeople().contains(userId)) {
+        if (groupId == AppConstant.ZFOO_GROUP_ID) {
             groupEntity.getPeople().add(userId);
         }
 
@@ -293,7 +293,7 @@ public class ChatController {
     }
 
     @PacketReceiver
-    public void atPinGroupMessageRequest(Session session, PinGroupMessageRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atPinGroupMessageRequest(Session session, PinGroupMessageRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var channelId = cm.getChannelId();
@@ -348,7 +348,7 @@ public class ChatController {
     }
 
     @PacketReceiver
-    public void atDeleteGroupPinMessageRequest(Session session, DeleteGroupPinMessageRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atDeleteGroupPinMessageRequest(Session session, DeleteGroupPinMessageRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var channelId = cm.getChannelId();
@@ -388,7 +388,7 @@ public class ChatController {
     }
 
     @PacketReceiver
-    public void atGroupHistoryPinMessageRequest(Session session, GroupHistoryPinMessageRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atGroupHistoryPinMessageRequest(Session session, GroupHistoryPinMessageRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var channelId = cm.getChannelId();

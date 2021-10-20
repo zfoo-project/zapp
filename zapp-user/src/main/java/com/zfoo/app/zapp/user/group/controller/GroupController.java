@@ -26,7 +26,7 @@ import com.zfoo.app.zapp.user.group.service.IGroupService;
 import com.zfoo.net.NetContext;
 import com.zfoo.net.packet.common.Error;
 import com.zfoo.net.packet.common.Message;
-import com.zfoo.net.packet.model.GatewayPacketAttachment;
+import com.zfoo.net.router.attachment.GatewayAttachment;
 import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
@@ -58,7 +58,7 @@ public class GroupController {
     private IGroupService groupService;
 
     @PacketReceiver
-    public void atCreateGroupRequest(Session session, CreateGroupRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atCreateGroupRequest(Session session, CreateGroupRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupName = cm.getGroupName();
         var userEntity = entityCaches.load(userId);
@@ -84,7 +84,7 @@ public class GroupController {
     }
 
     @PacketReceiver
-    public void atRefreshChannelTimeRequest(Session session, RefreshChannelTimeRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atRefreshChannelTimeRequest(Session session, RefreshChannelTimeRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var channelId = cm.getChannelId();
@@ -122,7 +122,7 @@ public class GroupController {
     }
 
     @PacketReceiver
-    public void atMuteGroupRequest(Session session, MuteGroupRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atMuteGroupRequest(Session session, MuteGroupRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var mute = cm.isMute();
@@ -144,7 +144,7 @@ public class GroupController {
     }
 
     @PacketReceiver
-    public void atMuteChannelRequest(Session session, MuteChannelRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atMuteChannelRequest(Session session, MuteChannelRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var channelId = cm.getChannelId();

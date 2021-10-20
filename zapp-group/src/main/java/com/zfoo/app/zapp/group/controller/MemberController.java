@@ -35,7 +35,7 @@ import com.zfoo.app.zapp.group.service.IGroupService;
 import com.zfoo.net.NetContext;
 import com.zfoo.net.packet.common.Error;
 import com.zfoo.net.packet.common.Message;
-import com.zfoo.net.packet.model.GatewayPacketAttachment;
+import com.zfoo.net.router.attachment.GatewayAttachment;
 import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
@@ -64,7 +64,7 @@ public class MemberController {
     private IGroupService groupService;
 
     @PacketReceiver
-    public void atCreateInviteGroupCodeRequest(Session session, CreateInviteGroupCodeRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atCreateInviteGroupCodeRequest(Session session, CreateInviteGroupCodeRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var expireEnum = InviteExpireEnum.getInviteExpireEnumByType(cm.getExpireType());
@@ -101,7 +101,7 @@ public class MemberController {
     }
 
     @PacketReceiver
-    public void atJoinGroupRequest(Session session, JoinGroupRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atJoinGroupRequest(Session session, JoinGroupRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
 
         var inviteCode = cm.getInviteCode();
@@ -171,7 +171,7 @@ public class MemberController {
     }
 
     @PacketReceiver
-    public void atJoinGroupByUserIdRequest(Session session, JoinGroupByUserIdRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atJoinGroupByUserIdRequest(Session session, JoinGroupByUserIdRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = -cm.getUserId();
 
@@ -222,7 +222,7 @@ public class MemberController {
     }
 
     @PacketReceiver
-    public void atDeleteInviteGroupCodeRequest(Session session, DeleteInviteGroupCodeRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atDeleteInviteGroupCodeRequest(Session session, DeleteInviteGroupCodeRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
 
         var inviteCode = cm.getInviteCode();
@@ -254,7 +254,7 @@ public class MemberController {
     }
 
     @PacketReceiver
-    public void atLeaveGroupRequest(Session session, LeaveGroupRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atLeaveGroupRequest(Session session, LeaveGroupRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
 
@@ -302,7 +302,7 @@ public class MemberController {
     }
 
     @PacketReceiver
-    public void atKickMemberRequest(Session session, KickMemberRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atKickMemberRequest(Session session, KickMemberRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var memberId = cm.getMemberId();
@@ -351,7 +351,7 @@ public class MemberController {
 
 
     @PacketReceiver
-    public void atAllInviteGroupCodeRequest(Session session, AllInviteGroupCodeRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atAllInviteGroupCodeRequest(Session session, AllInviteGroupCodeRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
 
@@ -378,7 +378,7 @@ public class MemberController {
 
 
     @PacketReceiver
-    public void atGroupMemberListRequest(Session session, GroupMemberListRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atGroupMemberListRequest(Session session, GroupMemberListRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var page = cm.getPage();
@@ -445,7 +445,7 @@ public class MemberController {
     }
 
     @PacketReceiver
-    public void atGroupMemberInfoRequest(Session session, GroupMemberInfoRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atGroupMemberInfoRequest(Session session, GroupMemberInfoRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var members = cm.getMembers();

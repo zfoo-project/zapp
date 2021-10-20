@@ -33,7 +33,7 @@ import com.zfoo.app.zapp.common.util.CommonUtils;
 import com.zfoo.net.NetContext;
 import com.zfoo.net.packet.common.Error;
 import com.zfoo.net.packet.common.Message;
-import com.zfoo.net.packet.model.GatewayPacketAttachment;
+import com.zfoo.net.router.attachment.GatewayAttachment;
 import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.net.task.TaskBus;
@@ -72,7 +72,7 @@ public class FriendController {
     private IEntityCaches<String, FriendEntity> friendEntityCaches;
 
     @PacketReceiver
-    public void atApplyFriendRequest(Session session, ApplyFriendRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atApplyFriendRequest(Session session, ApplyFriendRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var friendId = cm.getFriendId();
 
@@ -149,7 +149,7 @@ public class FriendController {
 
 
     @PacketReceiver
-    public void atAcceptFriendRequest(Session session, AcceptFriendRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atAcceptFriendRequest(Session session, AcceptFriendRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var friendId = cm.getFriendId();
 
@@ -236,7 +236,7 @@ public class FriendController {
 
 
     @PacketReceiver
-    public void atRejectFriendRequest(Session session, RejectFriendRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atRejectFriendRequest(Session session, RejectFriendRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var friendId = cm.getFriendId();
 
@@ -264,7 +264,7 @@ public class FriendController {
 
 
     @PacketReceiver
-    public void atDeleteFriendRequest(Session session, DeleteFriendRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atDeleteFriendRequest(Session session, DeleteFriendRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var friendId = cm.getFriendId();
 
@@ -301,7 +301,7 @@ public class FriendController {
     }
 
     @PacketReceiver
-    public void atBlacklistRequest(Session session, BlacklistRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atBlacklistRequest(Session session, BlacklistRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var targetId = cm.getTargetId();
 
@@ -347,7 +347,7 @@ public class FriendController {
     }
 
     @PacketReceiver
-    public void atBlacklistCancelRequest(Session session, BlacklistCancelRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atBlacklistCancelRequest(Session session, BlacklistCancelRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var targetId = cm.getTargetId();
 
@@ -385,7 +385,7 @@ public class FriendController {
     }
 
     @PacketReceiver
-    public void atMarkFriendRequest(Session session, MarkFriendRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atMarkFriendRequest(Session session, MarkFriendRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var friendId = cm.getFriendId();
         var tag = cm.getTag();

@@ -21,7 +21,7 @@ import com.zfoo.app.zapp.common.protocol.cache.refresh.RefreshUserTsCacheAsk;
 import com.zfoo.app.zapp.common.protocol.cache.refresh.RefreshWordCacheAsk;
 import com.zfoo.app.zapp.common.util.CommonUtils;
 import com.zfoo.net.NetContext;
-import com.zfoo.net.packet.model.GatewayPacketAttachment;
+import com.zfoo.net.router.attachment.GatewayAttachment;
 import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.protocol.collection.CollectionUtils;
@@ -57,7 +57,7 @@ public class CacheController {
     }
 
     @PacketReceiver
-    public void atGetUserCacheRequest(Session session, GetUserCacheRequest request, GatewayPacketAttachment gatewayAttachment) {
+    public void atGetUserCacheRequest(Session session, GetUserCacheRequest request, GatewayAttachment gatewayAttachment) {
         NetContext.getRouter().send(session, GetUserCacheResponse.valueOf(getUserCaches(request.getUserIds())), gatewayAttachment);
     }
 
@@ -151,7 +151,7 @@ public class CacheController {
     }
 
     @PacketReceiver
-    public void atSearchUserRequest(Session session, SearchUserRequest request, GatewayPacketAttachment gatewayAttachment) {
+    public void atSearchUserRequest(Session session, SearchUserRequest request, GatewayAttachment gatewayAttachment) {
         var query = request.getQuery();
         if (StringUtils.isBlank(query)) {
             NetContext.getRouter().send(session, SearchUserResponse.valueOf(Collections.EMPTY_LIST), gatewayAttachment);

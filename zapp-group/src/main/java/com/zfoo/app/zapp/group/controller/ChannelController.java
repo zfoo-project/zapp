@@ -26,7 +26,7 @@ import com.zfoo.app.zapp.common.result.CodeEnum;
 import com.zfoo.app.zapp.common.util.CommonUtils;
 import com.zfoo.net.NetContext;
 import com.zfoo.net.packet.common.Error;
-import com.zfoo.net.packet.model.GatewayPacketAttachment;
+import com.zfoo.net.router.attachment.GatewayAttachment;
 import com.zfoo.net.router.receiver.PacketReceiver;
 import com.zfoo.net.session.model.Session;
 import com.zfoo.orm.model.anno.EntityCachesInjection;
@@ -52,7 +52,7 @@ public class ChannelController {
     private IEntityCaches<Long, GroupEntity> groupEntityCaches;
 
     @PacketReceiver
-    public void atCreateChannelBoxRequest(Session session, CreateChannelBoxRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atCreateChannelBoxRequest(Session session, CreateChannelBoxRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var channelBoxName = cm.getChannelBoxName();
@@ -106,7 +106,7 @@ public class ChannelController {
 
 
     @PacketReceiver
-    public void atCreateChannelRequest(Session session, CreateChannelRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atCreateChannelRequest(Session session, CreateChannelRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var channelBoxName = cm.getChannelBoxName();
@@ -176,7 +176,7 @@ public class ChannelController {
     }
 
     @PacketReceiver
-    public void atSaveChannelRequest(Session session, SaveChannelRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atSaveChannelRequest(Session session, SaveChannelRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var channelId = cm.getChannelId();
@@ -235,7 +235,7 @@ public class ChannelController {
 
 
     @PacketReceiver
-    public void atSaveChannelBoxRequest(Session session, SaveChannelBoxRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atSaveChannelBoxRequest(Session session, SaveChannelBoxRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var oldChannelBoxName = cm.getOldChannelBoxName();
@@ -293,7 +293,7 @@ public class ChannelController {
     }
 
     @PacketReceiver
-    public void atDeleteChannelBoxRequest(Session session, DeleteChannelBoxRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atDeleteChannelBoxRequest(Session session, DeleteChannelBoxRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var channelBoxName = cm.getChannelBoxName();
@@ -334,7 +334,7 @@ public class ChannelController {
 
 
     @PacketReceiver
-    public void atDeleteChannelRequest(Session session, DeleteChannelRequest cm, GatewayPacketAttachment gatewayAttachment) {
+    public void atDeleteChannelRequest(Session session, DeleteChannelRequest cm, GatewayAttachment gatewayAttachment) {
         var userId = gatewayAttachment.getUid();
         var groupId = cm.getGroupId();
         var channelId = cm.getChannelId();
