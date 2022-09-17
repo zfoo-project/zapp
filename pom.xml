@@ -22,6 +22,7 @@
         <module>zapp-user</module>
         <module>zapp-feed</module>
         <module>record</module>
+        <module>zfoo-branch-for-zapp</module>
     </modules>
 
     <properties>
