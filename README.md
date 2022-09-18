@@ -1,5 +1,6 @@
 ### Ⅰ. zapp简介
 
+- **本项目已经停止维护，项目里使用的zfoo用的老版本**
 - 之前做了一个资源图片分享和交友网站，由于不可抗因数倒闭了。
 - 一怒之下就把前后端的代码都开源出来，顺便把数据库也开源了，开源开到裤衩。
 
@@ -21,7 +22,7 @@
 
 前端：
 
-- [前端原代码](https://github.com/zfoo-project/zapp-web)
+- [前端原代码](./web)
 - PWA，自适应页面
 - service worker实现
 - vue, vuetify
@@ -81,7 +82,6 @@
 
 ### Ⅴ. 项目部署
 
-- 首先必须用maven安装 [zfoo](https://github.com/zfoo-project/zfoo) 项目
 - 将前端项目zapp-web打包，打包过后，放在后端项目zapp-web下的resources中的static目录
 - 再将zapp用maven打包install成fatjar，所以每个项目只有一个jar包
 - 最后使用命令直接运行，nohup java -Dspring.profiles.active=pro -jar ${jarPath} >/dev/null 2>&1 &
