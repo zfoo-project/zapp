@@ -34,7 +34,6 @@ hs_err_pid*
 **/lucene-data/
 
 # 忽略生成的协议文件
-**/jsProtocol/
 **/gdProtocol/
 **/CsProtocol/
 **/LuaProtocol/

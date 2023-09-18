@@ -31,7 +31,7 @@
 
     <scheduler:scheduler id="schedulerManager"/>
 
-    <net:config id="zappGatewayNet" protocol-location="protocol.xml">
+    <net:config id="zappGatewayNet" protocol-location="protocol.xml" generate-js-protocol="true" fold-protocol="true">
         <net:registry center="${registry.center}" user="${registry.user}" password="${registry.password}">
             <net:address name="${registry.address.name}" url="${registry.address.url}"/>
         </net:registry>
