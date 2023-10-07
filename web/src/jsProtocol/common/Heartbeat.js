@@ -1,7 +1,6 @@
 // @author jaysunxiao
 // @version 3.0
 
-@ProtobufClass
 const Heartbeat = function() {
 };
 

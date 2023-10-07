@@ -70,44 +70,44 @@ public class LanguageAnalyzerTest {
         // 标准分词
         Analyzer analyzer = new StandardAnalyzer();
         System.out.println("标准分词:" + analyzer.getClass());
-        printAnalyzer(analyzer, chStr);
+        printAnalyzer(analyzer, enStr);
 
 
         // 空格分词
         analyzer = new WhitespaceAnalyzer();
         System.out.println("空格分词:" + analyzer.getClass());
-        printAnalyzer(analyzer, chStr);
+        printAnalyzer(analyzer, enStr);
 
 
         // 简单分词
         analyzer = new SimpleAnalyzer();
         System.out.println("简单分词:" + analyzer.getClass());
-        printAnalyzer(analyzer, chStr);
+        printAnalyzer(analyzer, enStr);
 
 
         // 二分法分词
         analyzer = new CJKAnalyzer();
         System.out.println("二分法分词:" + analyzer.getClass());
-        printAnalyzer(analyzer, chStr);
+        printAnalyzer(analyzer, enStr);
 
 
         // 关键字分词
         analyzer = new KeywordAnalyzer();
         System.out.println("关键字分词:" + analyzer.getClass());
-        printAnalyzer(analyzer, chStr);
+        printAnalyzer(analyzer, enStr);
 
 
         // 停用词分词
         Reader reader = new BufferedReader(new InputStreamReader(ClassUtils.getFileFromClassPath("search/analyzer/stopword.dic")));
         analyzer = new StopAnalyzer(reader);
         System.out.println("停用词分词:" + analyzer.getClass());
-        printAnalyzer(analyzer, chStr);
+        printAnalyzer(analyzer, enStr);
 
 
         // 中文智能分词
         analyzer = new SmartChineseAnalyzer();
         System.out.println("中文智能分词:" + analyzer.getClass());
-        printAnalyzer(analyzer, chStr);
+        printAnalyzer(analyzer, enStr);
 
         // IK分词器只能和elastic search配合使用
 //        analyzer = new IKAnalyzer();

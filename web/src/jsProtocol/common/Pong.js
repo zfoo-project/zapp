@@ -1,7 +1,6 @@
 // @author jaysunxiao
 // @version 3.0
 
-@ProtobufClass
 const Pong = function(time) {
     // 服务器当前的时间戳
     this.time = time; // long

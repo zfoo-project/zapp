@@ -14,14 +14,12 @@
 package com.zfoo.net.packet.common;
 
 import com.baidu.bjf.remoting.protobuf.annotation.Ignore;
-import com.baidu.bjf.remoting.protobuf.annotation.ProtobufClass;
 import com.zfoo.protocol.IPacket;
 
 /**
  * @author jaysunxiao
  * @version 3.0
  */
-@ProtobufClass
 public class Ping implements IPacket {
 
     @Ignore
